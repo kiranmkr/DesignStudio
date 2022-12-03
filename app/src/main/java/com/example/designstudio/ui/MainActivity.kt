@@ -1,11 +1,16 @@
-package com.example.designstudio
+package com.example.designstudio.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import com.example.designstudio.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
-    lateinit var mainBinding: ActivityMainBinding
+
+    private lateinit var mainBinding: ActivityMainBinding
+    private var workerHandler = Handler(Looper.getMainLooper())
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mainBinding = ActivityMainBinding.inflate(layoutInflater)
