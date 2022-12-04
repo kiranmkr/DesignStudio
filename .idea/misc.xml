@@ -5,8 +5,16 @@
       <map>
         <entry key="..\:/working/DesignStudio/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.2195" />
         <entry key="..\:/working/DesignStudio/app/src/main/res/drawable-v24/launcher_screen_with_logo.xml" value="0.2195" />
+        <entry key="..\:/working/DesignStudio/app/src/main/res/drawable/add_box.xml" value="0.2195" />
+        <entry key="..\:/working/DesignStudio/app/src/main/res/drawable/home_icon_state.xml" value="0.2195" />
         <entry key="..\:/working/DesignStudio/app/src/main/res/drawable/ic_menu.xml" value="0.2195" />
-        <entry key="..\:/working/DesignStudio/app/src/main/res/layout/activity_main.xml" value="0.536" />
+        <entry key="..\:/working/DesignStudio/app/src/main/res/drawable/pro_icon.xml" value="0.2195" />
+        <entry key="..\:/working/DesignStudio/app/src/main/res/drawable/round_dashboard.xml" value="0.2195" />
+        <entry key="..\:/working/DesignStudio/app/src/main/res/drawable/round_dashboard_un.xml" value="0.2195" />
+        <entry key="..\:/working/DesignStudio/app/src/main/res/drawable/round_settings.xml" value="0.2195" />
+        <entry key="..\:/working/DesignStudio/app/src/main/res/drawable/round_settings_un.xml" value="0.2195" />
+        <entry key="..\:/working/DesignStudio/app/src/main/res/drawable/setting_icon_state.xml" value="0.2195" />
+        <entry key="..\:/working/DesignStudio/app/src/main/res/layout/activity_main.xml" value="0.264" />
       </map>
     </option>
   </component>
