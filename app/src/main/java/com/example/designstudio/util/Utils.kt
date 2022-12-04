@@ -5,6 +5,7 @@ import android.app.Activity
 import android.content.Context
 import android.os.Build
 import android.widget.Toast
+import java.util.HashMap
 
 object Utils {
 
@@ -31,5 +32,42 @@ object Utils {
             e.printStackTrace()
         }
     }
+
+    @JvmStatic
+    var listOfCategory = arrayOf(
+        "events",
+        "baby shower",
+        "music",
+        "soap",
+        "camera",
+        "candy",
+        "kids",
+        "drinks",
+        "cosmetic",
+        "car",
+        "hazard",
+        "laptop",
+        "ramzan",
+        "shipping"
+    )
+
+    @JvmStatic
+    val categoryMap: HashMap<String, Int> =
+        hashMapOf(
+            "candy" to 10,
+            "car" to 10,
+            "cosmetic" to 10,
+            "drinks" to 10,
+            "hazard" to 10,
+            "kids" to 10,
+            "laptop" to 10,
+            "ramzan" to 10,
+            "shipping" to 10,
+            "baby shower" to 20,
+            "camera" to 10,
+            "events" to 20,
+            "music" to 11,
+            "soap" to 20,
+        )
 
 }

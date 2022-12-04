@@ -1,15 +1,18 @@
 package com.example.designstudio.ui
 
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import androidx.core.content.ContextCompat
+import androidx.transition.TransitionManager
 import com.example.designstudio.R
+import com.example.designstudio.customCallBack.TemplateClickCallBack
 import com.example.designstudio.databinding.ActivityMainBinding
 import com.example.designstudio.util.Utils
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), TemplateClickCallBack {
 
     private lateinit var mainBinding: ActivityMainBinding
     private var workerHandler = Handler(Looper.getMainLooper())
@@ -66,9 +69,9 @@ class MainActivity : AppCompatActivity() {
 
     private fun updateUiClick() {
 
-        mainBinding.goPro.setOnClickListener {
+        /*mainBinding.goPro.setOnClickListener {
             Utils.showToast(this, "calling Go To Pro")
-        }
+        }*/
 
         mainBinding.btnHome.setOnClickListener {
             homeSelection()
@@ -80,6 +83,17 @@ class MainActivity : AppCompatActivity() {
 
         mainBinding.btnSetting.setOnClickListener {
            settingSelection()
+        }
+    }
+
+    override fun onItemClickListener(labelStatus: Boolean) {
+
+    }
+
+
+    private fun showAnimation() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            TransitionManager.beginDelayedTransition(mainBinding.mainroot)
         }
     }
 }
