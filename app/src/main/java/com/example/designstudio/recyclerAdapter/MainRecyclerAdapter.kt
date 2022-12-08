@@ -1,15 +1,21 @@
 package com.example.designstudio.recyclerAdapter
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.designstudio.R
+import com.example.designstudio.model.NewCategoryData
+import com.example.designstudio.model.NewDataModelJson
 import com.example.designstudio.util.Utils
 import java.util.*
+import kotlin.collections.ArrayList
 
 class MainRecyclerAdapter : RecyclerView.Adapter<MainRecyclerAdapter.ViewHolder>() {
+
+    var totalCategory: ArrayList<NewCategoryData> = ArrayList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
 
@@ -20,14 +26,14 @@ class MainRecyclerAdapter : RecyclerView.Adapter<MainRecyclerAdapter.ViewHolder>
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.title.text = Utils.listOfCategory[position].uppercase(Locale.ENGLISH)
+//        holder.title.text = Utils.listOfCategory[position].uppercase(Locale.ENGLISH)
+        holder.title.text = totalCategory[position].categoryName.uppercase(Locale.ENGLISH)
         setCatItemRecycler(holder.recyclerItemView, Utils.listOfCategory[position])
     }
 
     override fun getItemCount(): Int {
-        return 14
+        return totalCategory.size
     }
-
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
@@ -47,6 +53,14 @@ class MainRecyclerAdapter : RecyclerView.Adapter<MainRecyclerAdapter.ViewHolder>
             setHasFixedSize(true)
             adapter = MainSubRecyclerAdapter(categoryName)
         }
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun updateList(list: java.util.ArrayList<NewCategoryData>) {
+        totalCategory.clear()
+        totalCategory.addAll(list)
+        notifyDataSetChanged()
 
     }
+
 }

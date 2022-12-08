@@ -1,5 +1,6 @@
 package com.example.designstudio.ui
 
+import android.content.Context
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -13,16 +14,31 @@ import com.example.designstudio.R
 import com.example.designstudio.customCallBack.TemplateClickCallBack
 import com.example.designstudio.databinding.ActivityMainBinding
 import com.example.designstudio.databinding.CustomHomeUiBinding
+import com.example.designstudio.model.NewCategoryData
+import com.example.designstudio.model.NewDataModelJson
 import com.example.designstudio.recyclerAdapter.MainRecyclerAdapter
 import com.example.designstudio.util.Utils
-import java.util.ArrayList
+import com.google.gson.Gson
+import org.json.JSONArray
+import java.io.IOException
+import java.io.InputStream
+import java.nio.charset.StandardCharsets
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.Executors
+import kotlin.collections.ArrayList
 
 class MainActivity : AppCompatActivity(), TemplateClickCallBack {
 
     private lateinit var mainBinding: ActivityMainBinding
     private var workerHandler = Handler(Looper.getMainLooper())
+    private var workerThread: ExecutorService = Executors.newCachedThreadPool()
     private lateinit var homeRoot: CustomHomeUiBinding
     private var cardListView: ArrayList<CardView> = ArrayList()
+
+    private var newAssetsList: ArrayList<NewDataModelJson> = ArrayList()
+    private var categoryList: ArrayList<NewCategoryData> = ArrayList()
+
+    private var mainListAdapter: MainRecyclerAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,9 +47,10 @@ class MainActivity : AppCompatActivity(), TemplateClickCallBack {
 
         homeRoot = CustomHomeUiBinding.bind(mainBinding.homeRoot.root)
 
-        updateUi()
-
-        updateUiClick()
+        workerHandler.post {
+            updateUi()
+            updateUiClick()
+        }
 
     }
 
@@ -47,10 +64,97 @@ class MainActivity : AppCompatActivity(), TemplateClickCallBack {
         cardListView.add(homeRoot.cardWaterColor)
         cardListView.add(homeRoot.cardShape)
 
-        homeRoot.mainRecycler.apply {
-//            setHasFixedSize(true)
-            adapter = MainRecyclerAdapter()
+        mainListAdapter = MainRecyclerAdapter()
+
+        if (mainListAdapter != null) {
+            homeRoot.mainRecycler.adapter = mainListAdapter
         }
+
+        readJsonData()
+    }
+
+    private fun readJsonData() {
+
+        workerThread.execute {
+
+            val readJsonList: String? = loadJSONFromAsset()
+
+            if (readJsonList != null) {
+
+
+                val jsonArrayAssets = JSONArray(readJsonList)
+                newAssetsList.clear()
+
+                for (i in 0 until jsonArrayAssets.length()) {
+                    val dataModel = Gson().fromJson(
+                        jsonArrayAssets[i].toString(),
+                        NewDataModelJson::class.java
+                    )
+                    newAssetsList.addAll(listOf(dataModel))
+                }
+
+                updateIndexList(0)
+
+            } else {
+                Log.d("readJsonData", "data is null")
+                workerHandler.post {
+                    Utils.showToast(this@MainActivity, getString(R.string.something_went_wrong))
+                }
+            }
+        }
+    }
+
+    private fun updateIndexList(position:Int) {
+
+        var categorySelection = "shapes"
+
+        when(position){
+            1->{
+                categorySelection = "shapes"
+            }
+            2->{
+                categorySelection = "stickers"
+            }
+        }
+
+        if (newAssetsList.isNotEmpty() && newAssetsList.size > 0) {
+
+            for (i in 0 until newAssetsList.size) {
+
+                if (newAssetsList[i].category == categorySelection) {
+
+                    categoryList.clear()
+
+                    categoryList.add(
+                        NewCategoryData(
+                            newAssetsList[i].totalCategory[i].categoryName,
+                            newAssetsList[i].totalCategory[i].size
+                        )
+                    )
+
+                    workerHandler.post {
+                        mainListAdapter?.updateList(categoryList)
+                    }
+
+                }
+            }
+        }
+    }
+
+    //*******************This method return the Json String *********************//
+    private fun loadJSONFromAsset(): String? {
+        val json: String = try {
+            val `is`: InputStream = assets.open("new_assets.json")
+            val size = `is`.available()
+            val buffer = ByteArray(size)
+            `is`.read(buffer)
+            `is`.close()
+            String(buffer, StandardCharsets.UTF_8)
+        } catch (ex: IOException) {
+            ex.printStackTrace()
+            return null
+        }
+        return json
     }
 
     private fun homeSelection() {
@@ -114,19 +218,19 @@ class MainActivity : AppCompatActivity(), TemplateClickCallBack {
         }
 
         homeRoot.cardSvg.setOnClickListener {
-            cardSelectionForAll(cardListView,it.id)
+            cardSelectionForAll(cardListView, it.id)
         }
         homeRoot.cardSticker.setOnClickListener {
-            cardSelectionForAll(cardListView,it.id)
+            cardSelectionForAll(cardListView, it.id)
         }
         homeRoot.cardMono.setOnClickListener {
-            cardSelectionForAll(cardListView,it.id)
+            cardSelectionForAll(cardListView, it.id)
         }
         homeRoot.cardWaterColor.setOnClickListener {
-            cardSelectionForAll(cardListView,it.id)
+            cardSelectionForAll(cardListView, it.id)
         }
         homeRoot.cardShape.setOnClickListener {
-            cardSelectionForAll(cardListView,it.id)
+            cardSelectionForAll(cardListView, it.id)
         }
     }
 

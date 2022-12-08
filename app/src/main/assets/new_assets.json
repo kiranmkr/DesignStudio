@@ -1,0 +1,24 @@
+[
+  {
+    "category": "shapes",
+    "totalCategory": [
+      {
+        "categoryName": "abstract",
+        "size": 20
+      },
+      {
+        "categoryName": "abstract",
+        "size": 20
+      }
+    ]
+  },
+  {
+    "category": "stickers",
+    "totalCategory": [
+      {
+        "categoryName": "stickers",
+        "size": 168
+      }
+    ]
+  }
+]
