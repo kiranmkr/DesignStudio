@@ -7,12 +7,14 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
+import android.view.View
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.transition.TransitionManager
 import com.example.designstudio.R
 import com.example.designstudio.customCallBack.TemplateClickCallBack
 import com.example.designstudio.databinding.ActivityMainBinding
+import com.example.designstudio.databinding.ButtomSheetLayoutBinding
 import com.example.designstudio.databinding.CustomHomeUiBinding
 import com.example.designstudio.model.NewCategoryData
 import com.example.designstudio.model.NewDataModelJson
@@ -20,6 +22,7 @@ import com.example.designstudio.recyclerAdapter.MainRecyclerAdapter
 import com.example.designstudio.util.Utils
 import com.google.gson.Gson
 import org.json.JSONArray
+import pub.devrel.easypermissions.EasyPermissions
 import java.io.IOException
 import java.io.InputStream
 import java.nio.charset.StandardCharsets
@@ -27,18 +30,19 @@ import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import kotlin.collections.ArrayList
 
-class MainActivity : AppCompatActivity(), TemplateClickCallBack {
+class MainActivity : AppCompatActivity(), TemplateClickCallBack,EasyPermissions.PermissionCallbacks {
 
     private lateinit var mainBinding: ActivityMainBinding
     private var workerHandler = Handler(Looper.getMainLooper())
     private var workerThread: ExecutorService = Executors.newCachedThreadPool()
     private lateinit var homeRoot: CustomHomeUiBinding
+    private lateinit var saveRoot: ButtomSheetLayoutBinding
     private var cardListView: ArrayList<CardView> = ArrayList()
 
     private var newAssetsList: ArrayList<NewDataModelJson> = ArrayList()
     private var categoryList: ArrayList<NewCategoryData> = ArrayList()
-
     private var mainListAdapter: MainRecyclerAdapter? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,6 +50,7 @@ class MainActivity : AppCompatActivity(), TemplateClickCallBack {
         setContentView(mainBinding.root)
 
         homeRoot = CustomHomeUiBinding.bind(mainBinding.homeRoot.root)
+        saveRoot = ButtomSheetLayoutBinding.bind(mainBinding.savingRoot.root)
 
         workerHandler.post {
             updateUi()
@@ -214,6 +219,15 @@ class MainActivity : AppCompatActivity(), TemplateClickCallBack {
 
         mainBinding.btnCustom.setOnClickListener {
             Utils.showToast(this, "calling Go To Custom")
+            if (saveRoot.root.visibility == View.GONE) {
+                showAnimation()
+                saveRoot.root.visibility = View.VISIBLE
+            }
+        }
+
+        saveRoot.savingWinRoot.setOnClickListener {
+            showAnimation()
+            saveRoot.root.visibility = View.GONE
         }
 
         mainBinding.btnSetting.setOnClickListener {
@@ -225,7 +239,7 @@ class MainActivity : AppCompatActivity(), TemplateClickCallBack {
     private fun homeIconClick() {
 
         homeRoot.goPro.setOnClickListener {
-            startActivity(Intent(this@MainActivity, ProScreen::class.java))
+            gotoProScreen()
         }
 
         homeRoot.cardSticker.setOnClickListener {
@@ -275,12 +289,79 @@ class MainActivity : AppCompatActivity(), TemplateClickCallBack {
     }
 
     override fun onItemClickListener(labelStatus: Boolean) {
+
         Log.d("onItemClickListener", "$labelStatus")
+
+        if (labelStatus) {
+            gotoProScreen()
+        } else {
+            goToEditingScreen()
+        }
+
+    }
+
+    private fun goToEditingScreen() {
+
+        if (EasyPermissions.hasPermissions(this@MainActivity, *Utils.readPermissionPass)) {
+            Log.d("myPermission", "hasPermissions allow")
+            startActivity(Intent(this@MainActivity, EditingScreen::class.java))
+        } else {
+            EasyPermissions.requestPermissions(
+                this@MainActivity, "Please allow permissions to proceed further",
+                Utils.request_read_permission, *Utils.readPermissionPass
+            )
+        }
+
+    }
+
+    private fun gotoProScreen() {
+        startActivity(Intent(this@MainActivity, ProScreen::class.java))
     }
 
     private fun showAnimation() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             TransitionManager.beginDelayedTransition(mainBinding.mainroot)
         }
+    }
+
+    override fun onBackPressed() {
+
+        if (saveRoot.root.visibility == View.VISIBLE) {
+            showAnimation()
+            saveRoot.root.visibility = View.GONE
+            return
+        }
+
+        super.onBackPressed()
+    }
+
+    override fun onPermissionsGranted(requestCode: Int, perms: MutableList<String>) {
+
+        when (requestCode) {
+            Utils.request_read_permission -> {
+                if (perms.size == Utils.readPermissionPass.size) {
+                    goToEditingScreen()
+                } else {
+                    Log.d("myPermissionsGranted", "not all Permission allow")
+                }
+            }
+            else -> {
+                Log.d("myPermissionsGranted", "no any  Permission allow")
+            }
+        }
+
+    }
+
+    override fun onPermissionsDenied(requestCode: Int, perms: MutableList<String>) {
+
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String?>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this)
     }
 }

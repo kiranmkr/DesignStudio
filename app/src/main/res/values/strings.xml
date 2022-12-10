@@ -12,11 +12,15 @@
     <string name="shapes">Shapes</string>
 
     <string name="image">image</string>
+    <string name="customize">Customize</string>
+    <string name="save">Save</string>
+    <string name="are_you_sure">Are you sure you want to exit the app?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
 
     <string name="something_went_wrong">Something went wrong! Please try again.</string>
 
     <string name="purchase_start">Purchase</string>
-
     <string name="subscription_start">Subscription Start</string>
     <string name="basic">Basic</string>
     <string name="continue_with_free_plan">Continue With Free Plan</string>

@@ -37,6 +37,7 @@ object Utils {
     var labelNumber: Int = 1
     var labelCategory: String = "abstract"
 
+    val request_read_permission = 2020220
 
     val inAppKeyArray: ArrayList<String> =
         arrayListOf("life_time")
