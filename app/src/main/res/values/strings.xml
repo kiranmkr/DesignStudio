@@ -38,4 +38,6 @@
     <string name="_82_noff">82%\nOFF</string>
     <string name="already_subscribed">Already Subscribed</string>
     <string name="internet_not_connected">Internet not connected.</string>
+
+    <string name="choose_one">Choose One</string>
 </resources>

@@ -1,6 +1,7 @@
 package com.example.designstudio.ui
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -24,19 +25,21 @@ import com.example.designstudio.model.NewDataModelJson
 import com.example.designstudio.model.RecyclerItemsModel
 import com.example.designstudio.recyclerAdapter.BottomMenuAdapter
 import com.example.designstudio.recyclerAdapter.MainRecyclerAdapter
+import com.example.designstudio.util.FeedbackUtils
 import com.example.designstudio.util.Utils
 import com.google.gson.Gson
 import org.json.JSONArray
 import pub.devrel.easypermissions.EasyPermissions
 import java.io.IOException
 import java.io.InputStream
+import java.lang.Exception
 import java.nio.charset.StandardCharsets
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import kotlin.collections.ArrayList
 
 class MainActivity : AppCompatActivity(), TemplateClickCallBack,
-    EasyPermissions.PermissionCallbacks, PopularClickListener {
+    EasyPermissions.PermissionCallbacks {
 
     private lateinit var mainBinding: ActivityMainBinding
     private var workerHandler = Handler(Looper.getMainLooper())
@@ -107,7 +110,117 @@ class MainActivity : AppCompatActivity(), TemplateClickCallBack,
         Log.d("myListSize", "${listItems.size}")
 
         newAdapter = BottomMenuAdapter(listItems)
-        newAdapter?.upDateCallBack(this)
+
+        newAdapter?.upDateCallBack(object : PopularClickListener {
+            override fun onPopularClick(position: String) {
+
+                Log.d("myCallBack", position)
+
+                when (position) {
+                    "premium" -> {
+                        if (GBilling.isSubscribedOrPurchasedSaved) {
+                            Utils.showToast(
+                                this@MainActivity,
+                                getString(R.string.already_subscribed)
+                            )
+                            Log.d("myBilling", "billing is buy")
+                        } else {
+                            startActivity(Intent(this@MainActivity, ProScreen::class.java))
+                        }
+                    }
+                    "purchase" -> {
+                        Log.d("restore", "This is log to restore purchase")
+                    }
+                    "bug" -> {
+                        Utils.feedBackDetails = "Report a Bug"
+                        FeedbackUtils.startFeedbackEmail(this@MainActivity)
+                    }
+                    "feature" -> {
+                        Utils.feedBackDetails = "Request a Feature"
+                        FeedbackUtils.startFeedbackEmail(this@MainActivity)
+                    }
+                    "policy" -> {
+                        try {
+                            startActivity(
+                                Intent(
+                                    Intent.ACTION_VIEW,
+                                    Uri.parse(Utils.policyLink)
+                                )
+                            )
+                        } catch (ex: java.lang.Exception) {
+                            ex.printStackTrace()
+                        }
+                    }
+                    "service" -> {
+                        try {
+                            startActivity(
+                                Intent(
+                                    Intent.ACTION_VIEW,
+                                    Uri.parse(Utils.policyLink)
+                                )
+                            )
+                        } catch (ex: java.lang.Exception) {
+                            ex.printStackTrace()
+                        }
+
+                    }
+                    "rate" -> {
+                        try {
+
+                            startActivity(
+                                Intent(
+                                    Intent.ACTION_VIEW, Uri
+                                        .parse("market://details?id=$packageName")
+                                )
+                            )
+                        } catch (ex: Exception) {
+                            ex.printStackTrace()
+                        }
+                    }
+                    "share" -> {
+                        try {
+
+                            val i = Intent(Intent.ACTION_SEND)
+                            i.type = "text/plain"
+                            i.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.app_name))
+                            var sAux = "\nLet me recommend you this application\n\n"
+                            sAux = """
+                    ${sAux}https://play.google.com/store/apps/details?id=$packageName
+                    """.trimIndent()
+                            i.putExtra(Intent.EXTRA_TEXT, sAux)
+
+                            startActivity(
+                                Intent.createChooser(
+                                    i,
+                                    resources.getString(R.string.choose_one)
+                                )
+                            )
+                        } catch (ex: Exception) {
+                            ex.printStackTrace()
+                        }
+
+                    }
+                    "other_apps" -> {
+                        try {
+                            startActivity(
+                                Intent(
+                                    Intent.ACTION_VIEW, Uri
+                                        .parse(Utils.moreAppLink)
+                                )
+                            )
+                        } catch (ex: Exception) {
+                            ex.printStackTrace()
+                        }
+
+                    }
+                    else -> {
+                        Log.d("myPopularClick", "not Match above of this")
+                    }
+                }
+
+            }
+
+        })
 
         settingRoot.reMain.setHasFixedSize(true)
         settingRoot.reMain.adapter = newAdapter
@@ -422,7 +535,7 @@ class MainActivity : AppCompatActivity(), TemplateClickCallBack,
             return
         }
 
-        if (settingRoot.root.visibility == View.VISIBLE){
+        if (settingRoot.root.visibility == View.VISIBLE) {
             showHomeRoot()
             return
         }
@@ -458,9 +571,5 @@ class MainActivity : AppCompatActivity(), TemplateClickCallBack,
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this)
-    }
-
-    override fun onPopularClick(position: String) {
-        Log.d("myCallBack", position)
     }
 }

@@ -39,6 +39,11 @@ object Utils {
 
     val request_read_permission = 2020220
 
+    var feedBackDetails: String = "Report a Bug"
+    var feedbackEmail:String = "mahipari6500@gmail.com"
+    var policyLink:String = "https://pdfmergeandsplit.blogspot.com/p/privacy-policy.html"
+    var moreAppLink:String = "https://play.google.com/store/apps/developer?id=EE+Applications"
+
     val inAppKeyArray: ArrayList<String> =
         arrayListOf("life_time")
 
