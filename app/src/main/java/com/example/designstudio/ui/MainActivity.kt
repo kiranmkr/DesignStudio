@@ -66,9 +66,7 @@ class MainActivity : AppCompatActivity(), TemplateClickCallBack {
 
         mainListAdapter = MainRecyclerAdapter()
 
-        if (mainListAdapter != null) {
-            homeRoot.mainRecycler.adapter = mainListAdapter
-        }
+        homeRoot.mainRecycler.adapter = mainListAdapter
 
         readJsonData()
     }
@@ -104,15 +102,15 @@ class MainActivity : AppCompatActivity(), TemplateClickCallBack {
         }
     }
 
-    private fun updateIndexList(position:Int) {
+    private fun updateIndexList(position: Int) {
 
         var categorySelection = "shapes"
 
-        when(position){
-            1->{
+        when (position) {
+            1 -> {
                 categorySelection = "shapes"
             }
-            2->{
+            2 -> {
                 categorySelection = "stickers"
             }
         }
