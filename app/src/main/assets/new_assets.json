@@ -7,12 +7,60 @@
         "size": 20
       },
       {
-        "categoryName": "stickers",
-        "size": 1
+        "categoryName": "architecture",
+        "size": 20
       },
       {
-        "categoryName": "values",
-        "size": 3
+        "categoryName": "art & design",
+        "size": 20
+      },
+      {
+        "categoryName": "automobile",
+        "size": 20
+      },
+      {
+        "categoryName": "baby",
+        "size": 20
+      },
+      {
+        "categoryName": "basic",
+        "size": 20
+      },
+      {
+        "categoryName": "camping",
+        "size": 20
+      },
+      {
+        "categoryName": "celebration",
+        "size": 20
+      },
+      {
+        "categoryName": "doodles",
+        "size": 20
+      },
+      {
+        "categoryName": "fashion",
+        "size": 20
+      },
+      {
+        "categoryName": "flowers",
+        "size": 20
+      },
+      {
+        "categoryName": "food",
+        "size": 20
+      },
+      {
+        "categoryName": "games",
+        "size": 20
+      },
+      {
+        "categoryName": "mom dad",
+        "size": 20
+      },
+      {
+        "categoryName": "plants",
+        "size": 20
       }
     ]
   },
@@ -21,6 +69,177 @@
     "totalCategory": [
       {
         "categoryName": "animal",
+        "size": 20
+      },
+      {
+        "categoryName": "beach",
+        "size": 20
+      },
+      {
+        "categoryName": "bee",
+        "size": 20
+      },
+      {
+        "categoryName": "book lovers",
+        "size": 20
+      },
+      {
+        "categoryName": "butterfly",
+        "size": 20
+      },
+      {
+        "categoryName": "christmas",
+        "size": 20
+      },
+      {
+        "categoryName": "father day",
+        "size": 20
+      },
+      {
+        "categoryName": "horror cartons",
+        "size": 20
+      },
+      {
+        "categoryName": "water color animal",
+        "size": 20
+      },
+      {
+        "categoryName": "water color Flower",
+        "size": 20
+      }
+    ]
+  },
+  {
+    "category": "monograms",
+    "totalCategory": [
+      {
+        "categoryName": "alphabets",
+        "size": 26
+      },
+      {
+        "categoryName": "christmas alphabets",
+        "size": 26
+      },
+      {
+        "categoryName": "floral patterned letters",
+        "size": 26
+      },
+      {
+        "categoryName": "flower alphabet",
+        "size": 26
+      },
+      {
+        "categoryName": "flower pack",
+        "size": 20
+      },
+      {
+        "categoryName": "glitters letters",
+        "size": 26
+      },
+      {
+        "categoryName": "luxury",
+        "size": 20
+      },
+      {
+        "categoryName": "summer alphabet",
+        "size": 26
+      },
+      {
+        "categoryName": "type alphabet",
+        "size": 26
+      },
+      {
+        "categoryName": "water color flower frame",
+        "size": 20
+      }
+    ]
+  },
+  {
+    "category": "svg",
+    "totalCategory": [
+      {
+        "categoryName": "back to school",
+        "size": 20
+      },
+      {
+        "categoryName": "cancer",
+        "size": 20
+      },
+      {
+        "categoryName": "chirstmas",
+        "size": 20
+      },
+      {
+        "categoryName": "family",
+        "size": 20
+      },
+      {
+        "categoryName": "holidays",
+        "size": 20
+      },
+      {
+        "categoryName": "motivational",
+        "size": 25
+      },
+      {
+        "categoryName": "nature",
+        "size": 20
+      },
+      {
+        "categoryName": "new year",
+        "size": 20
+      },
+      {
+        "categoryName": "quotes",
+        "size": 20
+      },
+      {
+        "categoryName": "thanks",
+        "size": 26
+      }
+    ]
+  },
+  {
+    "category": "watercolor",
+    "totalCategory": [
+      {
+        "categoryName": "balloons",
+        "size": 20
+      },
+      {
+        "categoryName": "bicycle",
+        "size": 20
+      },
+      {
+        "categoryName": "butterfly",
+        "size": 20
+      },
+      {
+        "categoryName": "chritams",
+        "size": 20
+      },
+      {
+        "categoryName": "food & drinks",
+        "size": 20
+      },
+      {
+        "categoryName": "gnomes",
+        "size": 20
+      },
+      {
+        "categoryName": "mother father day",
+        "size": 20
+      },
+      {
+        "categoryName": "new year",
+        "size": 20
+      },
+      {
+        "categoryName": "water color animal",
+        "size": 20
+      },
+      {
+        "categoryName": "water color Flower",
         "size": 20
       }
     ]

@@ -93,19 +93,7 @@ class MainActivity : AppCompatActivity(), TemplateClickCallBack,
 
     private fun settingScreenUi() {
 
-        if (GBilling.isSubscribedOrPurchasedSaved) {
-            Log.d("myBilling", "billing is buy")
-        } else {
-            Log.d("myBilling", "billing is not  buy")
-            listItems.add(RecyclerItemsModel(R.drawable.pro_icon, "Go Premium", "premium"))
-        }
-        listItems.add(RecyclerItemsModel(R.drawable.bug_icon, "Report a Bug", "bug"))
-        listItems.add(RecyclerItemsModel(R.drawable.feature_icon, "Request a Feature", "feature"))
-        listItems.add(RecyclerItemsModel(R.drawable.policy_icon, "Privacy policy", "policy"))
-        listItems.add(RecyclerItemsModel(R.drawable.terms_icon, "Terms of Service", "service"))
-        listItems.add(RecyclerItemsModel(R.drawable.rate_us_icon, "Rate this App", "rate"))
-        listItems.add(RecyclerItemsModel(R.drawable.share_icon, "Share", "share"))
-        listItems.add(RecyclerItemsModel(R.drawable.other_app_icon, "Other Apps", "other_apps"))
+        updateSettingList()
 
         Log.d("myListSize", "${listItems.size}")
 
@@ -147,7 +135,7 @@ class MainActivity : AppCompatActivity(), TemplateClickCallBack,
                                     Uri.parse(Utils.policyLink)
                                 )
                             )
-                        } catch (ex: java.lang.Exception) {
+                        } catch (ex: Exception) {
                             ex.printStackTrace()
                         }
                     }
@@ -159,7 +147,7 @@ class MainActivity : AppCompatActivity(), TemplateClickCallBack,
                                     Uri.parse(Utils.policyLink)
                                 )
                             )
-                        } catch (ex: java.lang.Exception) {
+                        } catch (ex: Exception) {
                             ex.printStackTrace()
                         }
 
@@ -231,6 +219,23 @@ class MainActivity : AppCompatActivity(), TemplateClickCallBack,
 
     }
 
+    private fun updateSettingList() {
+
+        if (GBilling.isSubscribedOrPurchasedSaved) {
+            Log.d("myBilling", "billing is buy")
+        } else {
+            Log.d("myBilling", "billing is not  buy")
+            listItems.add(RecyclerItemsModel(R.drawable.pro_icon, "Go Premium", "premium"))
+        }
+        listItems.add(RecyclerItemsModel(R.drawable.bug_icon, "Report a Bug", "bug"))
+        listItems.add(RecyclerItemsModel(R.drawable.feature_icon, "Request a Feature", "feature"))
+        listItems.add(RecyclerItemsModel(R.drawable.policy_icon, "Privacy policy", "policy"))
+        listItems.add(RecyclerItemsModel(R.drawable.terms_icon, "Terms of Service", "service"))
+        listItems.add(RecyclerItemsModel(R.drawable.rate_us_icon, "Rate this App", "rate"))
+        listItems.add(RecyclerItemsModel(R.drawable.share_icon, "Share", "share"))
+        listItems.add(RecyclerItemsModel(R.drawable.other_app_icon, "Other Apps", "other_apps"))
+    }
+
     private fun readJsonData() {
 
         workerThread.execute {
@@ -273,7 +278,7 @@ class MainActivity : AppCompatActivity(), TemplateClickCallBack,
                 categorySelection = "svg"
             }
             3 -> {
-                categorySelection = "monogram"
+                categorySelection = "monograms"
             }
             4 -> {
                 categorySelection = "watercolor"

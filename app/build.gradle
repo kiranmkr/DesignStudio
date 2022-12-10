@@ -5,6 +5,21 @@ plugins {
 
 android {
 
+    signingConfigs {
+        config {
+            storeFile file('D:\\working\\DesignStudio\\app\\jks\\design.jks')
+            keyAlias 'upload'
+            keyPassword 'design123'
+            storePassword 'design123'
+        }
+        debug {
+            storeFile file('D:\\working\\DesignStudio\\app\\jks\\design.jks')
+            keyAlias 'upload'
+            keyPassword 'design123'
+            storePassword 'design123'
+        }
+    }
+
     buildToolsVersion '30.0.3'
     compileSdk 32
 
@@ -22,8 +37,16 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.config
+        }
+        debug {
+            minifyEnabled false
+            shrinkResources false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.config
         }
     }
 
