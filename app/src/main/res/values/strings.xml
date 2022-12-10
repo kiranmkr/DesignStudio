@@ -17,6 +17,7 @@
     <string name="are_you_sure">Are you sure you want to exit the app?</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
+    <string name="setting">Setting</string>
 
     <string name="something_went_wrong">Something went wrong! Please try again.</string>
 

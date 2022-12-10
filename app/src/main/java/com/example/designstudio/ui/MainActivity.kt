@@ -12,12 +12,17 @@ import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.transition.TransitionManager
 import com.example.designstudio.R
+import com.example.designstudio.billing.GBilling
+import com.example.designstudio.customCallBack.PopularClickListener
 import com.example.designstudio.customCallBack.TemplateClickCallBack
 import com.example.designstudio.databinding.ActivityMainBinding
 import com.example.designstudio.databinding.ButtomSheetLayoutBinding
 import com.example.designstudio.databinding.CustomHomeUiBinding
+import com.example.designstudio.databinding.SettingScreenBinding
 import com.example.designstudio.model.NewCategoryData
 import com.example.designstudio.model.NewDataModelJson
+import com.example.designstudio.model.RecyclerItemsModel
+import com.example.designstudio.recyclerAdapter.BottomMenuAdapter
 import com.example.designstudio.recyclerAdapter.MainRecyclerAdapter
 import com.example.designstudio.util.Utils
 import com.google.gson.Gson
@@ -30,12 +35,14 @@ import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import kotlin.collections.ArrayList
 
-class MainActivity : AppCompatActivity(), TemplateClickCallBack,EasyPermissions.PermissionCallbacks {
+class MainActivity : AppCompatActivity(), TemplateClickCallBack,
+    EasyPermissions.PermissionCallbacks, PopularClickListener {
 
     private lateinit var mainBinding: ActivityMainBinding
     private var workerHandler = Handler(Looper.getMainLooper())
     private var workerThread: ExecutorService = Executors.newCachedThreadPool()
     private lateinit var homeRoot: CustomHomeUiBinding
+    private lateinit var settingRoot: SettingScreenBinding
     private lateinit var saveRoot: ButtomSheetLayoutBinding
     private var cardListView: ArrayList<CardView> = ArrayList()
 
@@ -50,6 +57,7 @@ class MainActivity : AppCompatActivity(), TemplateClickCallBack,EasyPermissions.
         setContentView(mainBinding.root)
 
         homeRoot = CustomHomeUiBinding.bind(mainBinding.homeRoot.root)
+        settingRoot = SettingScreenBinding.bind(mainBinding.settingRoot.root)
         saveRoot = ButtomSheetLayoutBinding.bind(mainBinding.savingRoot.root)
 
         workerHandler.post {
@@ -62,6 +70,7 @@ class MainActivity : AppCompatActivity(), TemplateClickCallBack,EasyPermissions.
     private fun updateUi() {
 
         homeSelection()
+        settingScreenUi()
 
         cardListView.add(homeRoot.cardSvg)
         cardListView.add(homeRoot.cardSticker)
@@ -74,6 +83,39 @@ class MainActivity : AppCompatActivity(), TemplateClickCallBack,EasyPermissions.
         homeRoot.mainRecycler.adapter = mainListAdapter
 
         readJsonData()
+    }
+
+    private var listItems: ArrayList<RecyclerItemsModel> = ArrayList()
+    private var newAdapter: BottomMenuAdapter? = null
+
+    private fun settingScreenUi() {
+
+        if (GBilling.isSubscribedOrPurchasedSaved) {
+            Log.d("myBilling", "billing is buy")
+        } else {
+            Log.d("myBilling", "billing is not  buy")
+            listItems.add(RecyclerItemsModel(R.drawable.pro_icon, "Go Premium", "premium"))
+        }
+        listItems.add(RecyclerItemsModel(R.drawable.bug_icon, "Report a Bug", "bug"))
+        listItems.add(RecyclerItemsModel(R.drawable.feature_icon, "Request a Feature", "feature"))
+        listItems.add(RecyclerItemsModel(R.drawable.policy_icon, "Privacy policy", "policy"))
+        listItems.add(RecyclerItemsModel(R.drawable.terms_icon, "Terms of Service", "service"))
+        listItems.add(RecyclerItemsModel(R.drawable.rate_us_icon, "Rate this App", "rate"))
+        listItems.add(RecyclerItemsModel(R.drawable.share_icon, "Share", "share"))
+        listItems.add(RecyclerItemsModel(R.drawable.other_app_icon, "Other Apps", "other_apps"))
+
+        Log.d("myListSize", "${listItems.size}")
+
+        newAdapter = BottomMenuAdapter(listItems)
+        newAdapter?.upDateCallBack(this)
+
+        settingRoot.reMain.setHasFixedSize(true)
+        settingRoot.reMain.adapter = newAdapter
+
+        settingRoot.btnBack.setOnClickListener {
+            showHomeRoot()
+        }
+
     }
 
     private fun readJsonData() {
@@ -213,27 +255,71 @@ class MainActivity : AppCompatActivity(), TemplateClickCallBack,EasyPermissions.
 
         homeIconClick()
 
+        saveSheetClick()
+
+        homeRoot.root.setOnClickListener {
+            Log.d("myEmptyClick", "empty click")
+        }
+        settingRoot.root.setOnClickListener {
+            Log.d("myEmptyClick", "empty click")
+        }
+        saveRoot.root.setOnClickListener {
+            Log.d("myEmptyClick", "empty click")
+        }
+
         mainBinding.btnHome.setOnClickListener {
-            homeSelection()
+            showHomeRoot()
         }
 
         mainBinding.btnCustom.setOnClickListener {
             Utils.showToast(this, "calling Go To Custom")
-            if (saveRoot.root.visibility == View.GONE) {
-                showAnimation()
-                saveRoot.root.visibility = View.VISIBLE
-            }
         }
 
         saveRoot.savingWinRoot.setOnClickListener {
-            showAnimation()
-            saveRoot.root.visibility = View.GONE
+            disMissSavingRoot()
         }
 
         mainBinding.btnSetting.setOnClickListener {
-            settingSelection()
+            showSettingRoot()
         }
 
+    }
+
+    private fun showHomeRoot() {
+        if (settingRoot.root.visibility == View.VISIBLE) {
+            showAnimation()
+            settingRoot.root.visibility = View.GONE
+        }
+        homeRoot.root.visibility = View.VISIBLE
+
+        homeSelection()
+    }
+
+    private fun showSettingRoot() {
+        if (homeRoot.root.visibility == View.VISIBLE) {
+            showAnimation()
+            homeRoot.root.visibility = View.GONE
+        }
+        settingRoot.root.visibility = View.VISIBLE
+        settingSelection()
+    }
+
+    private fun saveSheetClick() {
+
+        saveRoot.cardCustomize.setOnClickListener {
+            saveRoot.root.visibility = View.GONE
+            startActivity(Intent(this@MainActivity, EditingScreen::class.java))
+        }
+
+        saveRoot.cardSave.setOnClickListener {
+            disMissSavingRoot()
+            Utils.showToast(this, "card Save")
+        }
+    }
+
+    private fun disMissSavingRoot() {
+        showAnimation()
+        saveRoot.root.visibility = View.GONE
     }
 
     private fun homeIconClick() {
@@ -289,7 +375,6 @@ class MainActivity : AppCompatActivity(), TemplateClickCallBack,EasyPermissions.
     }
 
     override fun onItemClickListener(labelStatus: Boolean) {
-
         Log.d("onItemClickListener", "$labelStatus")
 
         if (labelStatus) {
@@ -297,14 +382,19 @@ class MainActivity : AppCompatActivity(), TemplateClickCallBack,EasyPermissions.
         } else {
             goToEditingScreen()
         }
-
     }
 
     private fun goToEditingScreen() {
 
         if (EasyPermissions.hasPermissions(this@MainActivity, *Utils.readPermissionPass)) {
             Log.d("myPermission", "hasPermissions allow")
-            startActivity(Intent(this@MainActivity, EditingScreen::class.java))
+
+            if (saveRoot.root.visibility == View.GONE) {
+                showAnimation()
+                saveRoot.root.visibility = View.VISIBLE
+            }
+
+//            startActivity(Intent(this@MainActivity, EditingScreen::class.java))
         } else {
             EasyPermissions.requestPermissions(
                 this@MainActivity, "Please allow permissions to proceed further",
@@ -329,6 +419,11 @@ class MainActivity : AppCompatActivity(), TemplateClickCallBack,EasyPermissions.
         if (saveRoot.root.visibility == View.VISIBLE) {
             showAnimation()
             saveRoot.root.visibility = View.GONE
+            return
+        }
+
+        if (settingRoot.root.visibility == View.VISIBLE){
+            showHomeRoot()
             return
         }
 
@@ -363,5 +458,9 @@ class MainActivity : AppCompatActivity(), TemplateClickCallBack,EasyPermissions.
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this)
+    }
+
+    override fun onPopularClick(position: String) {
+        Log.d("myCallBack", position)
     }
 }
