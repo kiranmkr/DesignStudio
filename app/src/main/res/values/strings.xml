@@ -11,5 +11,26 @@
     <string name="water_color">WaterColor</string>
     <string name="shapes">Shapes</string>
 
-    <string name="something_went_wrong" >Something went wrong! Please try again.</string>
+    <string name="image">image</string>
+
+    <string name="something_went_wrong">Something went wrong! Please try again.</string>
+
+    <string name="purchase_start">Purchase</string>
+
+    <string name="subscription_start">Subscription Start</string>
+    <string name="basic">Basic</string>
+    <string name="continue_with_free_plan">Continue With Free Plan</string>
+    <string name="no_commitment">No Commitment. Cancel anytime.</string>
+    <string name="_3_days_trial">Try 3 Days Free Trial</string>
+    <string name="then">Then</string>
+    <string name="year_after">/Year After Trial</string>
+    <string name="prices">Prices</string>
+    <string name="weekly">Weekly</string>
+    <string name="month">Monthly</string>
+    <string name="yearly">Yearly</string>
+    <string name="life_time">Lifetime</string>
+    <string name="_50_noff">50%\nOFF</string>
+    <string name="_82_noff">82%\nOFF</string>
+    <string name="already_subscribed">Already Subscribed</string>
+    <string name="internet_not_connected">Internet not connected.</string>
 </resources>

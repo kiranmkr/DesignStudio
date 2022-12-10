@@ -5,6 +5,7 @@ import android.app.Activity
 import android.content.Context
 import android.os.Build
 import android.widget.Toast
+import java.util.ArrayList
 
 object Utils {
 
@@ -35,6 +36,20 @@ object Utils {
     var mainCategory: String = "shapes"
     var labelNumber: Int = 1
     var labelCategory: String = "abstract"
+
+
+    val inAppKeyArray: ArrayList<String> =
+        arrayListOf("life_time")
+
+    val subscriptionsKeyArray: ArrayList<String> = arrayListOf("weekly_plan","monthly_plan", "yearly_plan")
+
+    const val inAppPurchasedkey: String = "life_time"
+
+    const val inAppWeekly = "weekly_plan"
+
+    const val inAppMonthly = "monthly_plan"
+
+    const val inAppYearly = "yearly_plan"
 
 
 }

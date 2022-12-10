@@ -1,5 +1,6 @@
 package com.example.designstudio.ui
 
+import android.content.Intent
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -224,7 +225,7 @@ class MainActivity : AppCompatActivity(), TemplateClickCallBack {
     private fun homeIconClick() {
 
         homeRoot.goPro.setOnClickListener {
-            Utils.showToast(this, "calling Go to Pro")
+            startActivity(Intent(this@MainActivity, ProScreen::class.java))
         }
 
         homeRoot.cardSticker.setOnClickListener {
