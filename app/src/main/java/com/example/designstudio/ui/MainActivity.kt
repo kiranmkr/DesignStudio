@@ -1,6 +1,5 @@
 package com.example.designstudio.ui
 
-import android.content.Context
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -85,13 +84,12 @@ class MainActivity : AppCompatActivity(), TemplateClickCallBack {
 
                 for (i in 0 until jsonArrayAssets.length()) {
                     val dataModel = Gson().fromJson(
-                        jsonArrayAssets[i].toString(),
-                        NewDataModelJson::class.java
+                        jsonArrayAssets[i].toString(), NewDataModelJson::class.java
                     )
                     newAssetsList.addAll(listOf(dataModel))
                 }
 
-                updateIndexList(0)
+                updateIndexList(1)
 
             } else {
                 Log.d("readJsonData", "data is null")
@@ -104,34 +102,52 @@ class MainActivity : AppCompatActivity(), TemplateClickCallBack {
 
     private fun updateIndexList(position: Int) {
 
-        var categorySelection = "shapes"
+        var categorySelection = "stickers"
 
         when (position) {
             1 -> {
-                categorySelection = "shapes"
-            }
-            2 -> {
                 categorySelection = "stickers"
             }
+            2 -> {
+                categorySelection = "svg"
+            }
+            3 -> {
+                categorySelection = "monogram"
+            }
+            4 -> {
+                categorySelection = "watercolor"
+            }
+            5 -> {
+                categorySelection = "shapes"
+            }
+
         }
 
-        if (newAssetsList.isNotEmpty() && newAssetsList.size > 0) {
+        Utils.mainCategory = categorySelection
+
+        if (newAssetsList.isNotEmpty()) {
 
             for (i in 0 until newAssetsList.size) {
 
                 if (newAssetsList[i].category == categorySelection) {
 
+                    Log.d("myList", categorySelection)
+
                     categoryList.clear()
 
-                    categoryList.add(
-                        NewCategoryData(
-                            newAssetsList[i].totalCategory[i].categoryName,
-                            newAssetsList[i].totalCategory[i].size
-                        )
-                    )
+                    newAssetsList[i].totalCategory.forEachIndexed { index, newCategoryData ->
+                        categoryList.add(index, newCategoryData)
+                    }
 
                     workerHandler.post {
-                        mainListAdapter?.updateList(categoryList)
+
+                        if (categoryList.isNotEmpty()) {
+
+                            Log.d("myList", "${categoryList.size}")
+
+                            mainListAdapter?.updateList(categoryList)
+                        }
+
                     }
 
                 }
@@ -159,16 +175,14 @@ class MainActivity : AppCompatActivity(), TemplateClickCallBack {
         mainBinding.imHome.isSelected = true
         mainBinding.tvHome.setTextColor(
             ContextCompat.getColor(
-                this,
-                R.color.colorAccent
+                this, R.color.colorAccent
             )
         )
 
         mainBinding.imSetting.isSelected = false
         mainBinding.tvSetting.setTextColor(
             ContextCompat.getColor(
-                this,
-                R.color.grayColor
+                this, R.color.grayColor
             )
         )
     }
@@ -177,16 +191,14 @@ class MainActivity : AppCompatActivity(), TemplateClickCallBack {
         mainBinding.imHome.isSelected = false
         mainBinding.tvHome.setTextColor(
             ContextCompat.getColor(
-                this,
-                R.color.grayColor
+                this, R.color.grayColor
             )
         )
 
         mainBinding.imSetting.isSelected = true
         mainBinding.tvSetting.setTextColor(
             ContextCompat.getColor(
-                this,
-                R.color.colorAccent
+                this, R.color.colorAccent
             )
         )
     }
@@ -215,20 +227,27 @@ class MainActivity : AppCompatActivity(), TemplateClickCallBack {
             Utils.showToast(this, "calling Go to Pro")
         }
 
-        homeRoot.cardSvg.setOnClickListener {
-            cardSelectionForAll(cardListView, it.id)
-        }
         homeRoot.cardSticker.setOnClickListener {
             cardSelectionForAll(cardListView, it.id)
+            updateIndexList(1)
         }
+
+        homeRoot.cardSvg.setOnClickListener {
+            cardSelectionForAll(cardListView, it.id)
+            updateIndexList(2)
+        }
+
         homeRoot.cardMono.setOnClickListener {
             cardSelectionForAll(cardListView, it.id)
+            updateIndexList(3)
         }
         homeRoot.cardWaterColor.setOnClickListener {
             cardSelectionForAll(cardListView, it.id)
+            updateIndexList(4)
         }
         homeRoot.cardShape.setOnClickListener {
             cardSelectionForAll(cardListView, it.id)
+            updateIndexList(5)
         }
     }
 
@@ -239,26 +258,23 @@ class MainActivity : AppCompatActivity(), TemplateClickCallBack {
             if (views[i].id == view_id) {
                 views[i].setCardBackgroundColor(
                     ContextCompat.getColor(
-                        this@MainActivity,
-                        R.color.colorAccent
+                        this@MainActivity, R.color.colorAccent
                     )
                 )
             } else {
                 Log.d("myCard", "Card is disable ")
                 views[i].setCardBackgroundColor(
                     ContextCompat.getColor(
-                        this@MainActivity,
-                        R.color.cardBack
+                        this@MainActivity, R.color.cardBack
                     )
                 )
             }
-
 
         }
     }
 
     override fun onItemClickListener(labelStatus: Boolean) {
-
+        Log.d("onItemClickListener", "$labelStatus")
     }
 
     private fun showAnimation() {

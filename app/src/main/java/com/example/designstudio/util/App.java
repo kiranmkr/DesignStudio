@@ -1,13 +1,12 @@
 package com.example.designstudio.util;
 
 import android.annotation.SuppressLint;
+import android.app.Application;
 import android.content.Context;
 import android.util.Log;
 
-import androidx.multidex.MultiDexApplication;
-
 @SuppressLint("StaticFieldLeak")
-public class App extends MultiDexApplication {
+public class App extends Application {
 
     public static Context context;
 

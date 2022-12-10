@@ -8,7 +8,11 @@
       },
       {
         "categoryName": "stickers",
-        "size": 25
+        "size": 1
+      },
+      {
+        "categoryName": "values",
+        "size": 3
       }
     ]
   },
@@ -16,8 +20,8 @@
     "category": "stickers",
     "totalCategory": [
       {
-        "categoryName": "stickers",
-        "size": 168
+        "categoryName": "animal",
+        "size": 20
       }
     ]
   }

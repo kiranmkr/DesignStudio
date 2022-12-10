@@ -13,12 +13,12 @@ import com.example.designstudio.ui.MainActivity
 import com.example.designstudio.util.Utils
 import com.example.designstudio.util.loadThumbnail
 
-
-class MainSubRecyclerAdapter(categoryName: String) :
+class MainSubRecyclerAdapter(totalCount: Int, categoryName: String) :
     RecyclerView.Adapter<MainSubRecyclerAdapter.ViewHolder>() {
 
     private var mContext: Activity? = null
     private var category: String = categoryName
+    private var totalNumber: Int = totalCount
     private var callBackMain: TemplateClickCallBack? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -33,22 +33,10 @@ class MainSubRecyclerAdapter(categoryName: String) :
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
-        /*if (position > 0) {
-            if (GBilling.isSubscribedOrPurchasedSaved) {
-                Log.e("mybp", "buy pro")
-                holder.adsFreeIcon.visibility = View.GONE
-            } else {
-                Log.e("mybp", "not buy pro")
-                holder.adsFreeIcon.visibility = View.VISIBLE
-            }
-        } else {
-            holder.adsFreeIcon.visibility = View.GONE
-        }*/
-
         holder.adsFreeIcon.visibility = View.GONE
 
         val path: String =
-            "file:///android_asset/category/${
+            "file:///android_asset/${Utils.mainCategory}/${
                 category
             }/thumbnails/" + (position + 1) + ".png"
 
@@ -59,7 +47,7 @@ class MainSubRecyclerAdapter(categoryName: String) :
     }
 
     override fun getItemCount(): Int {
-        return Utils.categoryMap[category]!!.toInt()
+        return totalNumber
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -76,8 +64,8 @@ class MainSubRecyclerAdapter(categoryName: String) :
 
             itemView.setOnClickListener {
 
-               /* Constant.labelNumber = adapterPosition + 1
-                Constant.labelCategory = category*/
+                Utils.labelNumber = adapterPosition + 1
+                Utils.labelCategory = category
 
                 if (adsFreeIcon.visibility == View.VISIBLE) {
                     callBackMain?.onItemClickListener(

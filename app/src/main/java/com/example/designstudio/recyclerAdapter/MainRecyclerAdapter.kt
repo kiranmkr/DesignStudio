@@ -8,14 +8,12 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.designstudio.R
 import com.example.designstudio.model.NewCategoryData
-import com.example.designstudio.model.NewDataModelJson
-import com.example.designstudio.util.Utils
 import java.util.*
 import kotlin.collections.ArrayList
 
 class MainRecyclerAdapter : RecyclerView.Adapter<MainRecyclerAdapter.ViewHolder>() {
 
-    var totalCategory: ArrayList<NewCategoryData> = ArrayList()
+    private var totalCategory: ArrayList<NewCategoryData> = ArrayList()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
 
@@ -26,9 +24,12 @@ class MainRecyclerAdapter : RecyclerView.Adapter<MainRecyclerAdapter.ViewHolder>
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-//        holder.title.text = Utils.listOfCategory[position].uppercase(Locale.ENGLISH)
         holder.title.text = totalCategory[position].categoryName.uppercase(Locale.ENGLISH)
-        setCatItemRecycler(holder.recyclerItemView, Utils.listOfCategory[position])
+        setCatItemRecycler(
+            holder.recyclerItemView,
+            totalCategory[position].categoryName,
+            totalCategory[position].size
+        )
     }
 
     override fun getItemCount(): Int {
@@ -48,10 +49,10 @@ class MainRecyclerAdapter : RecyclerView.Adapter<MainRecyclerAdapter.ViewHolder>
 
     }
 
-    private fun setCatItemRecycler(rec: RecyclerView, categoryName: String) {
+    private fun setCatItemRecycler(rec: RecyclerView, categoryName: String, totalCount: Int) {
         rec.apply {
             setHasFixedSize(true)
-            adapter = MainSubRecyclerAdapter(categoryName)
+            adapter = MainSubRecyclerAdapter(totalCount, categoryName)
         }
     }
 
