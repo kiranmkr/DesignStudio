@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
+    id 'com.google.gms.google-services'
 }
 
 android {
@@ -99,4 +100,8 @@ dependencies {
     implementation 'pub.devrel:easypermissions:3.0.0'
 
     implementation "com.google.code.gson:gson:2.9.1"
+
+    implementation platform('com.google.firebase:firebase-bom:31.1.1')
+    implementation 'com.google.firebase:firebase-analytics'
+    implementation 'com.google.firebase:firebase-storage'
 }

@@ -44,7 +44,7 @@ object Utils {
     var policyLink:String = "https://designstudioapp.blogspot.com/p/privacy-policy.html"
     var termsCondition:String = "https://designstudioapp.blogspot.com/p/terms-conditions.html"
 
-    var moreAppLink:String = "https://play.google.com/store/apps/developer?id=EE+Applications"
+    var moreAppLink:String = "https://play.google.com/store/apps/developer?id=Label+Maker"
 
     val inAppKeyArray: ArrayList<String> =
         arrayListOf("life_time")

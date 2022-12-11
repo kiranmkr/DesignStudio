@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1061883233053",
+    "project_id": "design-space-studio",
+    "storage_bucket": "design-space-studio.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1061883233053:android:a597ed2fe4004ed38257f4",
+        "android_client_info": {
+          "package_name": "com.svg.design.creator.diy"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1061883233053-aie1a10jm2k9na0kr10egso479imt80k.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDy-pzVcofN9UfYBs8SS3M09RIDXA1sFkQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1061883233053-aie1a10jm2k9na0kr10egso479imt80k.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

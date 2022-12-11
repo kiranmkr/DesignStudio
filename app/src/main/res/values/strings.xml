@@ -40,4 +40,10 @@
     <string name="internet_not_connected">Internet not connected.</string>
 
     <string name="choose_one">Choose One</string>
+
+    <string name="next">Next</string>
+    <string name="images">Images</string>
+    <string name="opacity">Opacity</string>
+    <string name="size">Size</string>
+    <string name="rotation">Rotation</string>
 </resources>
