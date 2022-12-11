@@ -1,6 +1,7 @@
 package com.example.designstudio.ui
 
 import android.annotation.SuppressLint
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -9,12 +10,11 @@ import android.view.Gravity
 import android.view.View
 import android.view.ViewTreeObserver
 import android.widget.FrameLayout
-import android.widget.LinearLayout
-import android.widget.RelativeLayout
 import android.widget.SeekBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import androidx.transition.TransitionManager
 import com.example.designstudio.databinding.ActivityEditingScreenBinding
 import com.example.designstudio.databinding.StickerMenuBinding
 import com.example.designstudio.recyclerAdapter.ColorPickerAdapter
@@ -37,6 +37,7 @@ class EditingScreen : AppCompatActivity(), MoveViewTouchListener.EditTextCallBac
     private var colorPickerAdapter = ColorPickerAdapter(this)
 
     private var bgLayoutButtonBar: ArrayList<ConstraintLayout> = ArrayList()
+    private var bgLayoutRoot: ArrayList<ConstraintLayout> = ArrayList()
     private var sizeSeekBarVal: Int = 300
     private var sizeSeekBarMin: Int = 100
 
@@ -132,17 +133,26 @@ class EditingScreen : AppCompatActivity(), MoveViewTouchListener.EditTextCallBac
         bgLayoutButtonBar.add(stickerMenuBinding.textColor)
         bgLayoutButtonBar.add(stickerMenuBinding.textOpacity)
 
+        bgLayoutRoot.add(mainBinding.sizeRoot)
+        bgLayoutRoot.add(mainBinding.colorRoot)
+        bgLayoutRoot.add(mainBinding.opacityRoot)
+        bgLayoutRoot.add(mainBinding.rotationRoot)
+
         stickerMenuBinding.textRotation.setOnClickListener {
             alphaManager(bgLayoutButtonBar, it.id)
+            visibilityManager(bgLayoutRoot,mainBinding.rotationRoot.id)
         }
         stickerMenuBinding.textSize.setOnClickListener {
             alphaManager(bgLayoutButtonBar, it.id)
+            visibilityManager(bgLayoutRoot,mainBinding.sizeRoot.id)
         }
         stickerMenuBinding.textColor.setOnClickListener {
             alphaManager(bgLayoutButtonBar, it.id)
+            visibilityManager(bgLayoutRoot,mainBinding.colorRoot.id)
         }
         stickerMenuBinding.textOpacity.setOnClickListener {
             alphaManager(bgLayoutButtonBar, it.id)
+            visibilityManager(bgLayoutRoot,mainBinding.opacityRoot.id)
         }
     }
 
@@ -153,6 +163,23 @@ class EditingScreen : AppCompatActivity(), MoveViewTouchListener.EditTextCallBac
             } else {
                 views[i].alpha = 0.4f
             }
+        }
+    }
+
+    private fun visibilityManager(views: ArrayList<ConstraintLayout>, view_id: Int) {
+        showAnimation()
+        for (i in views.indices) {
+            if (views[i].id == view_id) {
+                views[i].visibility = View.VISIBLE
+            } else {
+                views[i].visibility = View.GONE
+            }
+        }
+    }
+
+    private fun showAnimation() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            TransitionManager.beginDelayedTransition(mainBinding.mainroot)
         }
     }
 
