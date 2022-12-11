@@ -53,7 +53,6 @@ class MainActivity : AppCompatActivity(), TemplateClickCallBack,
     private var categoryList: ArrayList<NewCategoryData> = ArrayList()
     private var mainListAdapter: MainRecyclerAdapter? = null
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mainBinding = ActivityMainBinding.inflate(layoutInflater)
