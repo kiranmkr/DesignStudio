@@ -144,7 +144,7 @@ class MainActivity : AppCompatActivity(), TemplateClickCallBack,
                             startActivity(
                                 Intent(
                                     Intent.ACTION_VIEW,
-                                    Uri.parse(Utils.policyLink)
+                                    Uri.parse(Utils.termsCondition)
                                 )
                             )
                         } catch (ex: Exception) {

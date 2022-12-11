@@ -89,6 +89,7 @@
                     android:id="@+id/freePlan"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
                     android:text="@string/continue_with_free_plan"
                     android:textColor="@color/textColor"
                     android:textSize="@dimen/_16sdp"

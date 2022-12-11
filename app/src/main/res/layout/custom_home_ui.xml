@@ -84,8 +84,8 @@
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardSticker"
-                android:layout_width="@dimen/_70sdp"
-                android:layout_height="@dimen/_90sdp"
+                android:layout_width="@dimen/_60sdp"
+                android:layout_height="@dimen/_80sdp"
                 android:layout_marginStart="@dimen/_5sdp"
                 android:layout_marginEnd="@dimen/_5sdp"
                 app:cardBackgroundColor="@color/colorAccent"
@@ -109,7 +109,7 @@
                             android:layout_height="wrap_content"
                             android:text="@string/stickers"
                             android:textColor="@color/textColor"
-                            android:textSize="@dimen/_10sdp"
+                            android:textSize="@dimen/_9sdp"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintHorizontal_bias="0.5"
@@ -128,19 +128,19 @@
                             android:layout_height="@dimen/_25sdp"
                             android:layout_marginBottom="8dp"
                             android:contentDescription="@string/app_name"
-                            android:src="@drawable/ic_menu"
                             app:layout_constraintBottom_toTopOf="@+id/guideline4"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintHorizontal_bias="0.5"
-                            app:layout_constraintStart_toStartOf="parent" />
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:srcCompat="@drawable/sticker_icon" />
                     </androidx.constraintlayout.widget.ConstraintLayout>
                 </androidx.cardview.widget.CardView>
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardSvg"
-                android:layout_width="@dimen/_70sdp"
-                android:layout_height="@dimen/_90sdp"
+                android:layout_width="@dimen/_60sdp"
+                android:layout_height="@dimen/_80sdp"
                 android:layout_marginStart="@dimen/_5sdp"
                 android:layout_marginEnd="@dimen/_5sdp"
                 android:visibility="visible"
@@ -165,7 +165,7 @@
                             android:layout_height="wrap_content"
                             android:text="@string/svg"
                             android:textColor="@color/textColor"
-                            android:textSize="@dimen/_10sdp"
+                            android:textSize="@dimen/_9sdp"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintHorizontal_bias="0.5"
@@ -184,19 +184,19 @@
                             android:layout_height="@dimen/_25sdp"
                             android:layout_marginBottom="8dp"
                             android:contentDescription="@string/app_name"
-                            android:src="@drawable/ic_menu"
                             app:layout_constraintBottom_toTopOf="@+id/guideline5"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintHorizontal_bias="0.5"
-                            app:layout_constraintStart_toStartOf="parent" />
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:srcCompat="@drawable/svg_icon" />
                     </androidx.constraintlayout.widget.ConstraintLayout>
                 </androidx.cardview.widget.CardView>
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardMono"
-                android:layout_width="@dimen/_70sdp"
-                android:layout_height="@dimen/_90sdp"
+                android:layout_width="@dimen/_60sdp"
+                android:layout_height="@dimen/_80sdp"
                 android:layout_marginStart="@dimen/_5sdp"
                 android:layout_marginEnd="@dimen/_5sdp"
                 app:cardBackgroundColor="@color/cardBack"
@@ -220,7 +220,7 @@
                             android:layout_height="wrap_content"
                             android:text="@string/mono"
                             android:textColor="@color/textColor"
-                            android:textSize="@dimen/_10sdp"
+                            android:textSize="@dimen/_9sdp"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintHorizontal_bias="0.5"
@@ -239,19 +239,19 @@
                             android:layout_height="@dimen/_25sdp"
                             android:layout_marginBottom="8dp"
                             android:contentDescription="@string/app_name"
-                            android:src="@drawable/ic_menu"
                             app:layout_constraintBottom_toTopOf="@+id/guideline6"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintHorizontal_bias="0.5"
-                            app:layout_constraintStart_toStartOf="parent" />
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:srcCompat="@drawable/mono_icon" />
                     </androidx.constraintlayout.widget.ConstraintLayout>
                 </androidx.cardview.widget.CardView>
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardWaterColor"
-                android:layout_width="@dimen/_70sdp"
-                android:layout_height="@dimen/_90sdp"
+                android:layout_width="@dimen/_60sdp"
+                android:layout_height="@dimen/_80sdp"
                 android:layout_marginStart="@dimen/_5sdp"
                 android:layout_marginEnd="@dimen/_5sdp"
                 app:cardBackgroundColor="@color/cardBack"
@@ -276,7 +276,7 @@
                             android:text="@string/water_color"
                             android:textAlignment="center"
                             android:textColor="@color/textColor"
-                            android:textSize="@dimen/_10sdp"
+                            android:textSize="@dimen/_9sdp"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintHorizontal_bias="0.5"
@@ -295,19 +295,19 @@
                             android:layout_height="@dimen/_25sdp"
                             android:layout_marginBottom="8dp"
                             android:contentDescription="@string/app_name"
-                            android:src="@drawable/ic_menu"
                             app:layout_constraintBottom_toTopOf="@+id/guideline7"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintHorizontal_bias="0.5"
-                            app:layout_constraintStart_toStartOf="parent" />
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:srcCompat="@drawable/water_icon" />
                     </androidx.constraintlayout.widget.ConstraintLayout>
                 </androidx.cardview.widget.CardView>
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardShape"
-                android:layout_width="@dimen/_70sdp"
-                android:layout_height="@dimen/_90sdp"
+                android:layout_width="@dimen/_60sdp"
+                android:layout_height="@dimen/_80sdp"
                 android:layout_marginStart="@dimen/_5sdp"
                 android:layout_marginEnd="@dimen/_5sdp"
                 app:cardBackgroundColor="@color/cardBack"
@@ -331,7 +331,7 @@
                             android:layout_height="wrap_content"
                             android:text="@string/shapes"
                             android:textColor="@color/textColor"
-                            android:textSize="@dimen/_10sdp"
+                            android:textSize="@dimen/_9sdp"
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintHorizontal_bias="0.5"
@@ -350,11 +350,11 @@
                             android:layout_height="@dimen/_25sdp"
                             android:layout_marginBottom="8dp"
                             android:contentDescription="@string/app_name"
-                            android:src="@drawable/ic_menu"
                             app:layout_constraintBottom_toTopOf="@+id/guideline8"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintHorizontal_bias="0.5"
-                            app:layout_constraintStart_toStartOf="parent" />
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:srcCompat="@drawable/shape_icon" />
                     </androidx.constraintlayout.widget.ConstraintLayout>
                 </androidx.cardview.widget.CardView>
             </androidx.cardview.widget.CardView>

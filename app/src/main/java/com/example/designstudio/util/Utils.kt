@@ -41,7 +41,9 @@ object Utils {
 
     var feedBackDetails: String = "Report a Bug"
     var feedbackEmail:String = "mahipari6500@gmail.com"
-    var policyLink:String = "https://pdfmergeandsplit.blogspot.com/p/privacy-policy.html"
+    var policyLink:String = "https://designstudioapp.blogspot.com/p/privacy-policy.html"
+    var termsCondition:String = "https://designstudioapp.blogspot.com/p/terms-conditions.html"
+
     var moreAppLink:String = "https://play.google.com/store/apps/developer?id=EE+Applications"
 
     val inAppKeyArray: ArrayList<String> =
