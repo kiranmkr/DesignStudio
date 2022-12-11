@@ -5,22 +5,25 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
+import android.view.Gravity
 import android.view.View
+import android.view.ViewTreeObserver
+import android.widget.FrameLayout
+import android.widget.LinearLayout
+import android.widget.RelativeLayout
 import android.widget.SeekBar
 import androidx.appcompat.app.AppCompatActivity
-import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
-import com.example.designstudio.R
 import com.example.designstudio.databinding.ActivityEditingScreenBinding
 import com.example.designstudio.databinding.StickerMenuBinding
 import com.example.designstudio.recyclerAdapter.ColorPickerAdapter
 import com.example.designstudio.util.MoveViewTouchListener
 import com.example.designstudio.util.Utils
 import com.example.designstudio.util.loadThumbnail
-import java.util.ArrayList
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
+
 
 class EditingScreen : AppCompatActivity(), MoveViewTouchListener.EditTextCallBacks,
     ColorPickerAdapter.ColorPickerClick {
@@ -34,6 +37,8 @@ class EditingScreen : AppCompatActivity(), MoveViewTouchListener.EditTextCallBac
     private var colorPickerAdapter = ColorPickerAdapter(this)
 
     private var bgLayoutButtonBar: ArrayList<ConstraintLayout> = ArrayList()
+    private var sizeSeekBarVal: Int = 300
+    private var sizeSeekBarMin: Int = 100
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,9 +48,82 @@ class EditingScreen : AppCompatActivity(), MoveViewTouchListener.EditTextCallBac
         stickerMenuBinding = StickerMenuBinding.bind(mainBinding.menuRoot.root)
 
         workerHandler.post {
+            updateUi()
             bottomMenuUi()
             updateUiClick()
         }
+    }
+
+    private fun updateUi() {
+
+        val viewTreeObserver = mainBinding.parentView.viewTreeObserver
+
+        if (viewTreeObserver!!.isAlive) {
+
+            viewTreeObserver.addOnGlobalLayoutListener(object :
+                ViewTreeObserver.OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+
+                    mainBinding.parentView.viewTreeObserver?.removeOnGlobalLayoutListener(this)
+
+                    val newStickerSize = (mainBinding.parentView.width/1.5).toInt()
+
+                    val params = FrameLayout.LayoutParams(newStickerSize, newStickerSize)
+                    params.gravity = Gravity.CENTER
+                    mainBinding.imgMainBg.layoutParams = params
+
+                    Log.d("myWindows","${newStickerSize}")
+
+                    applyStickerThinks()
+
+                }
+            })
+        }
+
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private fun applyStickerThinks() {
+
+        val path =
+            "file:///android_asset/${Utils.mainCategory}/${Utils.labelCategory}/thumbnails/${Utils.labelNumber}.png"
+
+        Log.d("myPositionPath", path)
+
+        mainBinding.imgMainBg.loadThumbnail(path, null)
+
+        val moveViewTouchListener = MoveViewTouchListener(this, mainBinding.imgMainBg)
+
+        mainBinding.imgMainBg.setOnTouchListener(moveViewTouchListener)
+        moveViewTouchListener.callBacks = this
+
+        workerHandler.postDelayed({
+
+            Log.d("myStickerW", "${mainBinding.imgMainBg.width} -- ${mainBinding.imgMainBg.height}")
+
+            sizeSeekBarVal = (mainBinding.imgMainBg.width) * 2
+
+            mainBinding.sizeSeekBar.max = sizeSeekBarVal
+            mainBinding.sizeSeekBar.progress = mainBinding.imgMainBg.width
+            mainBinding.sizeSeekBar.setOnSeekBarChangeListener(object :
+                SeekBar.OnSeekBarChangeListener {
+                override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
+
+                    if (fromUser && progress > sizeSeekBarMin) {
+
+                        val params = FrameLayout.LayoutParams(progress, progress)
+                        params.gravity = Gravity.CENTER
+                        mainBinding.imgMainBg.layoutParams = params
+
+                        // mainBinding.imgMainBg.rotation = progress.toFloat()
+                    }
+                }
+
+                override fun onStartTrackingTouch(seekBar: SeekBar) {}
+                override fun onStopTrackingTouch(seekBar: SeekBar) {}
+            })
+
+        }, 0)
     }
 
     private fun bottomMenuUi() {
@@ -68,7 +146,6 @@ class EditingScreen : AppCompatActivity(), MoveViewTouchListener.EditTextCallBac
         }
     }
 
-
     private fun alphaManager(views: ArrayList<ConstraintLayout>, view_id: Int) {
         for (i in views.indices) {
             if (views[i].id == view_id) {
@@ -79,7 +156,6 @@ class EditingScreen : AppCompatActivity(), MoveViewTouchListener.EditTextCallBac
         }
     }
 
-    @SuppressLint("ClickableViewAccessibility")
     private fun updateUiClick() {
 
         mainBinding.imgBack.setOnClickListener {
@@ -89,18 +165,6 @@ class EditingScreen : AppCompatActivity(), MoveViewTouchListener.EditTextCallBac
         mainBinding.cardNext.setOnClickListener {
             Utils.showToast(this, "calling Next btn")
         }
-
-        val path =
-            "file:///android_asset/${Utils.mainCategory}/${Utils.labelCategory}/thumbnails/${Utils.labelNumber}.png"
-
-        Log.d("myPositionPath", path)
-
-        mainBinding.imgMainBg.loadThumbnail(path, null)
-
-        val moveViewTouchListener = MoveViewTouchListener(this, mainBinding.imgMainBg)
-
-        mainBinding.imgMainBg.setOnTouchListener(moveViewTouchListener)
-        moveViewTouchListener.callBacks = this
 
         Log.d("myRotation", "${mainBinding.imgMainBg.rotation}")
 
