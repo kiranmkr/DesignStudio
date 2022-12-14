@@ -92,6 +92,7 @@
             android:id="@+id/btnCustom"
             android:layout_width="0dp"
             android:layout_height="match_parent"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/btnSetting"
             app:layout_constraintHorizontal_bias="0.5"
@@ -173,6 +174,17 @@
     <include
         android:id="@+id/savingRoot"
         layout="@layout/buttom_sheet_layout"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <include
+        android:id="@+id/dialogRoot"
+        layout="@layout/download_dialog"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:visibility="gone"

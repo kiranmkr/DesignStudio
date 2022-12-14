@@ -20,6 +20,7 @@ import com.example.designstudio.customCallBack.TemplateClickCallBack
 import com.example.designstudio.databinding.ActivityMainBinding
 import com.example.designstudio.databinding.ButtomSheetLayoutBinding
 import com.example.designstudio.databinding.CustomHomeUiBinding
+import com.example.designstudio.databinding.DownloadDialogBinding
 import com.example.designstudio.databinding.SettingScreenBinding
 import com.example.designstudio.model.NewCategoryData
 import com.example.designstudio.model.NewDataModelJson
@@ -47,6 +48,7 @@ class MainActivity : AppCompatActivity(), TemplateClickCallBack,
     private lateinit var homeRoot: CustomHomeUiBinding
     private lateinit var settingRoot: SettingScreenBinding
     private lateinit var saveRoot: ButtomSheetLayoutBinding
+    private lateinit var dialogRoot: DownloadDialogBinding
     private var cardListView: ArrayList<CardView> = ArrayList()
 
     private var newAssetsList: ArrayList<NewDataModelJson> = ArrayList()
@@ -58,13 +60,10 @@ class MainActivity : AppCompatActivity(), TemplateClickCallBack,
         mainBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(mainBinding.root)
 
-        /*if (!BuildConfig.DEBUG) {
-            FirebaseApp.initializeApp(this@MainActivity)
-        }*/
-
         homeRoot = CustomHomeUiBinding.bind(mainBinding.homeRoot.root)
         settingRoot = SettingScreenBinding.bind(mainBinding.settingRoot.root)
         saveRoot = ButtomSheetLayoutBinding.bind(mainBinding.savingRoot.root)
+        dialogRoot = DownloadDialogBinding.bind(mainBinding.dialogRoot.root)
 
         workerHandler.post {
 

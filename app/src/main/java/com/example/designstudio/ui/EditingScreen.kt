@@ -227,6 +227,7 @@ class EditingScreen : AppCompatActivity(), MoveViewTouchListener.EditTextCallBac
                 filePath = dirDest.toString()
 
             }
+
         } else {
             //These for devices running on android < Q
             //So I don't think an explanation is needed here
