@@ -104,7 +104,7 @@
         "size": 20
       },
       {
-        "categoryName": "water color Flower",
+        "categoryName": "water color flower",
         "size": 20
       }
     ]
@@ -158,6 +158,10 @@
     "category": "svg",
     "totalCategory": [
       {
+        "categoryName": "family",
+        "size": 20
+      },
+      {
         "categoryName": "back to school",
         "size": 20
       },
@@ -167,10 +171,6 @@
       },
       {
         "categoryName": "chirstmas",
-        "size": 20
-      },
-      {
-        "categoryName": "family",
         "size": 20
       },
       {
@@ -239,7 +239,7 @@
         "size": 20
       },
       {
-        "categoryName": "water color Flower",
+        "categoryName": "water color flower",
         "size": 20
       }
     ]

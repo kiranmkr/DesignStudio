@@ -3,15 +3,16 @@ package com.example.designstudio.ui
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.transition.TransitionManager
+import com.example.designstudio.BuildConfig
 import com.example.designstudio.R
 import com.example.designstudio.billing.GBilling
 import com.example.designstudio.customCallBack.PopularClickListener
@@ -27,16 +28,15 @@ import com.example.designstudio.recyclerAdapter.BottomMenuAdapter
 import com.example.designstudio.recyclerAdapter.MainRecyclerAdapter
 import com.example.designstudio.util.FeedbackUtils
 import com.example.designstudio.util.Utils
+import com.google.firebase.FirebaseApp
 import com.google.gson.Gson
 import org.json.JSONArray
 import pub.devrel.easypermissions.EasyPermissions
 import java.io.IOException
 import java.io.InputStream
-import java.lang.Exception
 import java.nio.charset.StandardCharsets
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
-import kotlin.collections.ArrayList
 
 class MainActivity : AppCompatActivity(), TemplateClickCallBack,
     EasyPermissions.PermissionCallbacks {
@@ -58,11 +58,18 @@ class MainActivity : AppCompatActivity(), TemplateClickCallBack,
         mainBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(mainBinding.root)
 
+        /*if (!BuildConfig.DEBUG) {
+            FirebaseApp.initializeApp(this@MainActivity)
+        }*/
+
         homeRoot = CustomHomeUiBinding.bind(mainBinding.homeRoot.root)
         settingRoot = SettingScreenBinding.bind(mainBinding.settingRoot.root)
         saveRoot = ButtomSheetLayoutBinding.bind(mainBinding.savingRoot.root)
 
         workerHandler.post {
+
+            FirebaseApp.initializeApp(this@MainActivity)
+
             updateUi()
             updateUiClick()
         }

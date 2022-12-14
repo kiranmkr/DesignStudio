@@ -1,10 +1,13 @@
 package com.example.designstudio.ui
 
 import android.annotation.SuppressLint
+import android.content.ContentValues
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.provider.MediaStore
 import android.util.Log
 import android.view.Gravity
 import android.view.View
@@ -21,6 +24,8 @@ import com.example.designstudio.recyclerAdapter.ColorPickerAdapter
 import com.example.designstudio.util.MoveViewTouchListener
 import com.example.designstudio.util.Utils
 import com.example.designstudio.util.loadThumbnail
+import com.google.firebase.storage.FirebaseStorage
+import java.io.*
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
@@ -67,13 +72,13 @@ class EditingScreen : AppCompatActivity(), MoveViewTouchListener.EditTextCallBac
 
                     mainBinding.parentView.viewTreeObserver?.removeOnGlobalLayoutListener(this)
 
-                    val newStickerSize = (mainBinding.parentView.width/1.5).toInt()
+                    val newStickerSize = (mainBinding.parentView.width / 1.5).toInt()
 
                     val params = FrameLayout.LayoutParams(newStickerSize, newStickerSize)
                     params.gravity = Gravity.CENTER
                     mainBinding.imgMainBg.layoutParams = params
 
-                    Log.d("myWindows","${newStickerSize}")
+                    Log.d("myWindows", "${newStickerSize}")
 
                     applyStickerThinks()
 
@@ -87,7 +92,7 @@ class EditingScreen : AppCompatActivity(), MoveViewTouchListener.EditTextCallBac
     private fun applyStickerThinks() {
 
         val path =
-            "file:///android_asset/${Utils.mainCategory}/${Utils.labelCategory}/thumbnails/${Utils.labelNumber}.png"
+            "file:///android_asset/${Utils.mainCategory}/${Utils.subCategory}/thumbnails/${Utils.fileLabelNumber}.png"
 
         Log.d("myPositionPath", path)
 
@@ -140,19 +145,19 @@ class EditingScreen : AppCompatActivity(), MoveViewTouchListener.EditTextCallBac
 
         stickerMenuBinding.textRotation.setOnClickListener {
             alphaManager(bgLayoutButtonBar, it.id)
-            visibilityManager(bgLayoutRoot,mainBinding.rotationRoot.id)
+            visibilityManager(bgLayoutRoot, mainBinding.rotationRoot.id)
         }
         stickerMenuBinding.textSize.setOnClickListener {
             alphaManager(bgLayoutButtonBar, it.id)
-            visibilityManager(bgLayoutRoot,mainBinding.sizeRoot.id)
+            visibilityManager(bgLayoutRoot, mainBinding.sizeRoot.id)
         }
         stickerMenuBinding.textColor.setOnClickListener {
             alphaManager(bgLayoutButtonBar, it.id)
-            visibilityManager(bgLayoutRoot,mainBinding.colorRoot.id)
+            visibilityManager(bgLayoutRoot, mainBinding.colorRoot.id)
         }
         stickerMenuBinding.textOpacity.setOnClickListener {
             alphaManager(bgLayoutButtonBar, it.id)
-            visibilityManager(bgLayoutRoot,mainBinding.opacityRoot.id)
+            visibilityManager(bgLayoutRoot, mainBinding.opacityRoot.id)
         }
     }
 
@@ -183,6 +188,77 @@ class EditingScreen : AppCompatActivity(), MoveViewTouchListener.EditTextCallBac
         }
     }
 
+    private fun saveMediaToStorage(bytes: ByteArray): String? {
+
+        var filePath: String? = null
+
+        //Generating a file name
+        val filename = "${Utils.fileLabelNumber}${Utils.getFileExt()}"
+
+        //Output stream
+        var fos: OutputStream? = null
+
+        //For devices running android >= Q
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            //getting the contentResolver
+            applicationContext?.contentResolver?.also { resolver ->
+
+                val dirDest =
+                    File(Utils.getRootPath(), "${Utils.mainCategory}/${Utils.subCategory}")
+
+                //Content resolver will process the contentvalues
+                val contentValues = ContentValues().apply {
+                    //putting file information in content values
+                    put(MediaStore.MediaColumns.DISPLAY_NAME, filename)
+                    put(MediaStore.MediaColumns.RELATIVE_PATH, "$dirDest")
+                }
+
+                //MediaStore.Files.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY)
+                //Inserting the contentValues to contentResolver and getting the Uri
+                // val imageUri: Uri? = resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
+                val imageUri: Uri? = resolver.insert(
+                    MediaStore.Files.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY),
+                    contentValues
+                )
+
+                //Opening an outputstream with the Uri that we got
+                fos = imageUri?.let { resolver.openOutputStream(it) }
+
+                filePath = dirDest.toString()
+
+            }
+        } else {
+            //These for devices running on android < Q
+            //So I don't think an explanation is needed here
+            val dirDest = File(Utils.getRootPath(), "${Utils.mainCategory}/${Utils.subCategory}")
+            if (!dirDest.exists()) {
+                dirDest.mkdirs()
+            }
+            val image = File(dirDest, filename)
+
+            Log.e("myFilePath", "$image")
+
+            fos = FileOutputStream(image)
+
+            filePath = image.toString()
+
+        }
+
+        fos?.use {
+            //Finally writing the bitmap to the output stream that we opened
+
+            it.write(bytes)
+
+            it.flush()
+            it.close()
+
+            Log.e("myFileFos", "Saved to Photos Main")
+
+        }
+
+        return filePath
+    }
+
     private fun updateUiClick() {
 
         mainBinding.imgBack.setOnClickListener {
@@ -190,7 +266,15 @@ class EditingScreen : AppCompatActivity(), MoveViewTouchListener.EditTextCallBac
         }
 
         mainBinding.cardNext.setOnClickListener {
-            Utils.showToast(this, "calling Next btn")
+
+            Log.d(
+                "myFileName", "${Utils.mainCategory} --" +
+                        "  ${Utils.subCategory} -- ${Utils.fileLabelNumber}" +
+                        " -- ${Utils.getFileExt()}"
+            )
+
+            downloadFireBaseFile()
+
         }
 
         Log.d("myRotation", "${mainBinding.imgMainBg.rotation}")
@@ -229,6 +313,34 @@ class EditingScreen : AppCompatActivity(), MoveViewTouchListener.EditTextCallBac
 
         mainBinding.reGgColor.setHasFixedSize(true)
         mainBinding.reGgColor.adapter = colorPickerAdapter
+
+    }
+
+    private fun downloadFireBaseFile() {
+
+        Log.d(
+            "myFileName", "${Utils.mainCategory} --  " +
+                    "${Utils.subCategory} -- ${Utils.fileLabelNumber}" +
+                    " -- ${Utils.getFileExt()}"
+        )
+
+
+        val mRef = FirebaseStorage.getInstance().reference
+
+        val completePath =
+            "/${Utils.mainCategory}/${Utils.subCategory}/${Utils.fileLabelNumber}${Utils.getFileExt()}"
+
+        val islandRef = mRef.child(completePath)
+
+        val tenMegabyte: Long = (1024 * 1024) * 10
+
+        islandRef.getBytes(tenMegabyte).addOnSuccessListener {
+            val filePath = saveMediaToStorage(it)
+            Log.d("myLocalPath", "${filePath}")
+        }.addOnFailureListener {
+            // Handle any errors
+            Log.d("myLocalPath", "byte is not download")
+        }
 
     }
 

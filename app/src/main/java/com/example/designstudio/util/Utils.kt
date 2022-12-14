@@ -4,8 +4,10 @@ import android.Manifest
 import android.app.Activity
 import android.content.Context
 import android.os.Build
+import android.os.Environment
 import android.widget.Toast
 import com.example.designstudio.R
+import java.io.File
 import java.util.ArrayList
 
 object Utils {
@@ -22,6 +24,31 @@ object Utils {
         )
     }
 
+    @Suppress("DEPRECATION")
+    @JvmField
+    val BASE_LOCAL_PATH =
+        "${Environment.getExternalStorageDirectory().absolutePath}/Download/DesignStudio/"
+
+    val Base_External_Save = "${Environment.DIRECTORY_DOWNLOADS}/DesignStudio"
+
+    @JvmStatic
+    fun getRootPath(): String {
+
+        val root = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            Base_External_Save
+        } else {
+            BASE_LOCAL_PATH
+        }
+
+        val dirDest = File(BASE_LOCAL_PATH)
+
+        if (!dirDest.exists()) {
+            dirDest.mkdirs()
+        }
+
+        return root
+    }
+
     fun showToast(c: Context, message: String) {
         try {
             if (!(c as Activity).isFinishing) {
@@ -34,9 +61,17 @@ object Utils {
         }
     }
 
+    fun getFileExt(): String {
+        return if (mainCategory == "svg") {
+            ".svg"
+        } else {
+            ".png"
+        }
+    }
+
     var mainCategory: String = "shapes"
-    var labelNumber: Int = 1
-    var labelCategory: String = "abstract"
+    var subCategory: String = "abstract"
+    var fileLabelNumber: Int = 1
 
     val request_read_permission = 2020220
 

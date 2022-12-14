@@ -64,8 +64,8 @@ class MainSubRecyclerAdapter(totalCount: Int, categoryName: String) :
 
             itemView.setOnClickListener {
 
-                Utils.labelNumber = adapterPosition + 1
-                Utils.labelCategory = category
+                Utils.fileLabelNumber = adapterPosition + 1
+                Utils.subCategory = category
 
                 if (adsFreeIcon.visibility == View.VISIBLE) {
                     callBackMain?.onItemClickListener(
