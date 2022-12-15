@@ -43,7 +43,7 @@
             android:layout_width="@dimen/_70sdp"
             android:layout_height="@dimen/_30sdp"
             android:layout_marginEnd="16dp"
-            android:elevation="@dimen/_5sdp"
+            android:elevation="@dimen/_10sdp"
             app:cardBackgroundColor="@color/white"
             app:cardCornerRadius="@dimen/_5sdp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -58,7 +58,7 @@
                     android:id="@+id/textView13"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/next"
+                    android:text="@string/saveImg"
                     android:textColor="@color/colorAccent"
                     android:textSize="@dimen/_14sdp"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -258,5 +258,16 @@
                 app:layout_constraintTop_toTopOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <include
+        android:id="@+id/dialogRoot"
+        layout="@layout/download_dialog"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

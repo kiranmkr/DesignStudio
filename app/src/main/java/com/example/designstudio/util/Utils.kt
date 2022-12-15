@@ -26,6 +26,8 @@ object Utils {
         )
     }
 
+    var stat = false
+
     @Suppress("DEPRECATION")
     @JvmField
     val BASE_LOCAL_PATH =

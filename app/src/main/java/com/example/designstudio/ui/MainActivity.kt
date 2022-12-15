@@ -1,5 +1,6 @@
 package com.example.designstudio.ui
 
+import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.content.Intent
 import android.net.Uri
@@ -13,7 +14,9 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.Observer
 import androidx.transition.TransitionManager
+import com.android.billingclient.api.Purchase
 import com.example.designstudio.R
 import com.example.designstudio.billing.GBilling
 import com.example.designstudio.customCallBack.PopularClickListener
@@ -62,13 +65,63 @@ class MainActivity : AppCompatActivity(), TemplateClickCallBack,
         saveRoot = ButtomSheetLayoutBinding.bind(mainBinding.savingRoot.root)
         dialogRoot = DownloadDialogBinding.bind(mainBinding.dialogRoot.root)
 
-        workerHandler.post {
+        FirebaseApp.initializeApp(this@MainActivity)
 
-            FirebaseApp.initializeApp(this@MainActivity)
+        updateBillingData()
 
-            updateUi()
-            updateUiClick()
+        updateUi()
+
+        updateUiClick()
+
+    }
+
+    private fun updateBillingData() {
+
+        GBilling.setOnPurchasedObserver(this,
+            object : Observer<Purchase> {
+                override fun onChanged(t: Purchase?) {
+                    if (t != null) {
+                        if (GBilling.isSubscribedOrPurchasedSaved) {
+                            proUser()
+                        }
+                    }
+                }
+            })
+
+        GBilling.isSubscribedOrPurchased(
+            Utils.subscriptionsKeyArray,
+            Utils.inAppKeyArray,
+            this,
+            object : Observer<Boolean> {
+                override fun onChanged(t: Boolean?) {
+                    if (t != null) {
+                        if (t) {
+                            Log.d("myBilling", "Billing is buy")
+                            proUser()
+                        } else {
+                            Log.d("myBilling", "Billing  is not  buy")
+                            startActivity(Intent(this@MainActivity, ProScreen::class.java))
+                        }
+                    }
+                }
+
+            }
+        )
+
+
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    private fun proUser() {
+
+        if (categoryList.isNotEmpty()) {
+            Log.d("myList", "${categoryList.size}")
+            mainListAdapter?.updateList(categoryList)
         }
+
+        updateSettingListBilling()
+
+        homeRoot.goPro.visibility = View.GONE
 
     }
 
@@ -96,8 +149,6 @@ class MainActivity : AppCompatActivity(), TemplateClickCallBack,
     private fun settingScreenUi() {
 
         updateSettingList()
-
-        Log.d("myListSize", "${listItems.size}")
 
         newAdapter = BottomMenuAdapter(listItems)
 
@@ -223,12 +274,15 @@ class MainActivity : AppCompatActivity(), TemplateClickCallBack,
 
     private fun updateSettingList() {
 
+        listItems.clear()
+
         if (GBilling.isSubscribedOrPurchasedSaved) {
             Log.d("myBilling", "billing is buy")
         } else {
             Log.d("myBilling", "billing is not  buy")
             listItems.add(RecyclerItemsModel(R.drawable.pro_icon, "Go Premium", "premium"))
         }
+
         listItems.add(RecyclerItemsModel(R.drawable.bug_icon, "Report a Bug", "bug"))
         listItems.add(RecyclerItemsModel(R.drawable.feature_icon, "Request a Feature", "feature"))
         listItems.add(RecyclerItemsModel(R.drawable.policy_icon, "Privacy policy", "policy"))
@@ -236,6 +290,41 @@ class MainActivity : AppCompatActivity(), TemplateClickCallBack,
         listItems.add(RecyclerItemsModel(R.drawable.rate_us_icon, "Rate this App", "rate"))
         listItems.add(RecyclerItemsModel(R.drawable.share_icon, "Share", "share"))
         listItems.add(RecyclerItemsModel(R.drawable.other_app_icon, "Other Apps", "other_apps"))
+
+        Log.d("myListSize", "${listItems.size}")
+
+    }
+
+    private fun updateSettingListBilling() {
+
+        listItems.clear()
+
+        if (GBilling.isSubscribedOrPurchasedSaved) {
+            Log.d("myBilling", "billing is buy")
+        } else {
+            Log.d("myBilling", "billing is not  buy")
+            listItems.add(RecyclerItemsModel(R.drawable.pro_icon, "Go Premium", "premium"))
+        }
+
+        listItems.add(RecyclerItemsModel(R.drawable.bug_icon, "Report a Bug", "bug"))
+        listItems.add(RecyclerItemsModel(R.drawable.feature_icon, "Request a Feature", "feature"))
+        listItems.add(RecyclerItemsModel(R.drawable.policy_icon, "Privacy policy", "policy"))
+        listItems.add(RecyclerItemsModel(R.drawable.terms_icon, "Terms of Service", "service"))
+        listItems.add(RecyclerItemsModel(R.drawable.rate_us_icon, "Rate this App", "rate"))
+        listItems.add(RecyclerItemsModel(R.drawable.share_icon, "Share", "share"))
+        listItems.add(RecyclerItemsModel(R.drawable.other_app_icon, "Other Apps", "other_apps"))
+
+        Log.d("myListSize", "${listItems.size}")
+
+        newAdapter?.upIconList(listItems)
+
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (Utils.stat) {
+            proUser()
+        }
     }
 
     private fun readJsonData() {
@@ -245,7 +334,6 @@ class MainActivity : AppCompatActivity(), TemplateClickCallBack,
             val readJsonList: String? = loadJSONFromAsset()
 
             if (readJsonList != null) {
-
 
                 val jsonArrayAssets = JSONArray(readJsonList)
                 newAssetsList.clear()
@@ -270,20 +358,20 @@ class MainActivity : AppCompatActivity(), TemplateClickCallBack,
 
     private fun updateIndexList(position: Int) {
 
-        var categorySelection = "stickers"
+        var categorySelection = "svg"
 
         when (position) {
             1 -> {
-                categorySelection = "stickers"
+                categorySelection = "svg"
             }
             2 -> {
-                categorySelection = "svg"
+                categorySelection = "watercolor"
             }
             3 -> {
                 categorySelection = "monograms"
             }
             4 -> {
-                categorySelection = "watercolor"
+                categorySelection = "stickers"
             }
             5 -> {
                 categorySelection = "shapes"
@@ -435,6 +523,7 @@ class MainActivity : AppCompatActivity(), TemplateClickCallBack,
         }
 
         saveRoot.cardSave.setOnClickListener {
+
             disMissSavingRoot()
 
             dialogRoot.root.visibility = View.VISIBLE
@@ -619,12 +708,13 @@ class MainActivity : AppCompatActivity(), TemplateClickCallBack,
 
         homeRoot.cardSticker.setOnClickListener {
             cardSelectionForAll(cardListView, it.id)
-            updateIndexList(1)
+            updateIndexList(4)
         }
 
         homeRoot.cardSvg.setOnClickListener {
             cardSelectionForAll(cardListView, it.id)
-            updateIndexList(2)
+            updateIndexList(1)
+
         }
 
         homeRoot.cardMono.setOnClickListener {
@@ -633,7 +723,7 @@ class MainActivity : AppCompatActivity(), TemplateClickCallBack,
         }
         homeRoot.cardWaterColor.setOnClickListener {
             cardSelectionForAll(cardListView, it.id)
-            updateIndexList(4)
+            updateIndexList(2)
         }
         homeRoot.cardShape.setOnClickListener {
             cardSelectionForAll(cardListView, it.id)
@@ -664,7 +754,6 @@ class MainActivity : AppCompatActivity(), TemplateClickCallBack,
     }
 
     override fun onItemClickListener(labelStatus: Boolean) {
-        Log.d("onItemClickListener", "$labelStatus")
 
         if (labelStatus) {
             gotoProScreen()

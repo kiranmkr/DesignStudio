@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.designstudio.R
+import com.example.designstudio.billing.GBilling
 import com.example.designstudio.customCallBack.TemplateClickCallBack
 import com.example.designstudio.ui.MainActivity
 import com.example.designstudio.util.Utils
@@ -33,7 +34,15 @@ class MainSubRecyclerAdapter(totalCount: Int, categoryName: String) :
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
-        holder.adsFreeIcon.visibility = View.GONE
+        if (position > 2) {
+            if (GBilling.isSubscribedOrPurchasedSaved) {
+                holder.adsFreeIcon.visibility = View.GONE
+            } else {
+                holder.adsFreeIcon.visibility = View.VISIBLE
+            }
+        } else {
+            holder.adsFreeIcon.visibility = View.GONE
+        }
 
         val path: String =
             "file:///android_asset/${Utils.mainCategory}/${

@@ -18,7 +18,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.transition.TransitionManager
+import com.example.designstudio.R
 import com.example.designstudio.databinding.ActivityEditingScreenBinding
+import com.example.designstudio.databinding.DownloadDialogBinding
 import com.example.designstudio.databinding.StickerMenuBinding
 import com.example.designstudio.recyclerAdapter.ColorPickerAdapter
 import com.example.designstudio.util.MoveViewTouchListener
@@ -45,6 +47,7 @@ class EditingScreen : AppCompatActivity(), MoveViewTouchListener.EditTextCallBac
     private var bgLayoutRoot: ArrayList<ConstraintLayout> = ArrayList()
     private var sizeSeekBarVal: Int = 300
     private var sizeSeekBarMin: Int = 100
+    private lateinit var dialogRoot: DownloadDialogBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,6 +55,7 @@ class EditingScreen : AppCompatActivity(), MoveViewTouchListener.EditTextCallBac
         setContentView(mainBinding.root)
 
         stickerMenuBinding = StickerMenuBinding.bind(mainBinding.menuRoot.root)
+        dialogRoot = DownloadDialogBinding.bind(mainBinding.dialogRoot.root)
 
         workerHandler.post {
             updateUi()
@@ -268,12 +272,6 @@ class EditingScreen : AppCompatActivity(), MoveViewTouchListener.EditTextCallBac
 
         mainBinding.cardNext.setOnClickListener {
 
-            Log.d(
-                "myFileName", "${Utils.mainCategory} --" +
-                        "  ${Utils.subCategory} -- ${Utils.fileLabelNumber}" +
-                        " -- ${Utils.getFileExt()}"
-            )
-
             downloadFireBaseFile()
 
         }
@@ -319,28 +317,98 @@ class EditingScreen : AppCompatActivity(), MoveViewTouchListener.EditTextCallBac
 
     private fun downloadFireBaseFile() {
 
-        Log.d(
-            "myFileName", "${Utils.mainCategory} --  " +
-                    "${Utils.subCategory} -- ${Utils.fileLabelNumber}" +
-                    " -- ${Utils.getFileExt()}"
-        )
+        dialogRoot.root.visibility = View.VISIBLE
+
+        try {
+
+            if ((Utils.mainCategory == "svg")) {
+
+                Log.d(
+                    "myFileName", "${Utils.mainCategory} --  " +
+                            "${Utils.subCategory} -- ${Utils.fileLabelNumber}" +
+                            " -- ${Utils.getFileExt()}"
+                )
+
+                val mRef = FirebaseStorage.getInstance().reference
+
+                val completePath =
+                    "/${Utils.mainCategory}/${Utils.subCategory}/${Utils.fileLabelNumber}${Utils.getFileExt()}"
+
+                val islandRef = mRef.child(completePath)
+
+                val tenMegabyte: Long = (1024 * 1024) * 10
+
+                if (Utils.isNetworkAvailable(this)) {
+
+                    islandRef.getBytes(tenMegabyte).addOnSuccessListener {
+
+                        workerThread.execute {
+
+                            val filePath = saveMediaToStorage(it)
+
+                            Log.d("myLocalPath", "${filePath}")
+
+                            workerHandler.postDelayed({
+
+                                if (filePath != null) {
+                                    showAnimation()
+                                    dialogRoot.root.visibility = View.GONE
+                                    Utils.showToast(this, "File is save this path ${filePath}")
+                                } else {
+                                    showAnimation()
+                                    dialogRoot.root.visibility = View.GONE
+                                }
+
+                            }, 1000)
+
+                        }
+
+                    }.addOnFailureListener {
+                        // Handle any errors
+                        Log.d("myLocalPath", "byte is not download")
+                        showAnimation()
+                        dialogRoot.root.visibility = View.GONE
+                    }
+                } else {
+                    showAnimation()
+                    dialogRoot.root.visibility = View.GONE
+                    Utils.showToast(this, getString(R.string.internet_not_connected))
+                }
 
 
-        val mRef = FirebaseStorage.getInstance().reference
+            } else {
 
-        val completePath =
-            "/${Utils.mainCategory}/${Utils.subCategory}/${Utils.fileLabelNumber}${Utils.getFileExt()}"
+                val path =
+                    "${Utils.mainCategory}/${Utils.subCategory}/thumbnails/${Utils.fileLabelNumber}.png"
 
-        val islandRef = mRef.child(completePath)
+                workerThread.execute {
 
-        val tenMegabyte: Long = (1024 * 1024) * 10
+                    //Finally writing the bitmap to the output stream that we opened
+                    val isPut: InputStream = assets.open(path)
 
-        islandRef.getBytes(tenMegabyte).addOnSuccessListener {
-            val filePath = saveMediaToStorage(it)
-            Log.d("myLocalPath", "${filePath}")
-        }.addOnFailureListener {
-            // Handle any errors
-            Log.d("myLocalPath", "byte is not download")
+                    val s = saveMediaToStorage(isPut.readBytes())
+
+                    workerHandler.postDelayed({
+
+                        if (s != null) {
+                            showAnimation()
+                            dialogRoot.root.visibility = View.GONE
+                            Utils.showToast(this, "File is save this path ${s}")
+                        } else {
+                            showAnimation()
+                            dialogRoot.root.visibility = View.GONE
+                        }
+
+                    }, 1000)
+
+                }
+            }
+
+        } catch (ex: IOException) {
+            ex.printStackTrace()
+            showAnimation()
+            dialogRoot.root.visibility = View.GONE
+            Utils.showToast(this, getString(R.string.something_went_wrong))
         }
 
     }

@@ -37,7 +37,7 @@
             android:contentDescription="@string/app_name"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:srcCompat="@drawable/round_ads_click" />
+            app:srcCompat="@drawable/pro_icon" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
