@@ -1,27 +1,24 @@
 package com.example.designstudio.ui
 
+import android.content.ContentValues
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.provider.MediaStore
 import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.cardview.widget.CardView
 import androidx.core.content.ContextCompat
 import androidx.transition.TransitionManager
-import com.example.designstudio.BuildConfig
 import com.example.designstudio.R
 import com.example.designstudio.billing.GBilling
 import com.example.designstudio.customCallBack.PopularClickListener
 import com.example.designstudio.customCallBack.TemplateClickCallBack
-import com.example.designstudio.databinding.ActivityMainBinding
-import com.example.designstudio.databinding.ButtomSheetLayoutBinding
-import com.example.designstudio.databinding.CustomHomeUiBinding
-import com.example.designstudio.databinding.DownloadDialogBinding
-import com.example.designstudio.databinding.SettingScreenBinding
+import com.example.designstudio.databinding.*
 import com.example.designstudio.model.NewCategoryData
 import com.example.designstudio.model.NewDataModelJson
 import com.example.designstudio.model.RecyclerItemsModel
@@ -30,11 +27,11 @@ import com.example.designstudio.recyclerAdapter.MainRecyclerAdapter
 import com.example.designstudio.util.FeedbackUtils
 import com.example.designstudio.util.Utils
 import com.google.firebase.FirebaseApp
+import com.google.firebase.storage.FirebaseStorage
 import com.google.gson.Gson
 import org.json.JSONArray
 import pub.devrel.easypermissions.EasyPermissions
-import java.io.IOException
-import java.io.InputStream
+import java.io.*
 import java.nio.charset.StandardCharsets
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
@@ -389,6 +386,9 @@ class MainActivity : AppCompatActivity(), TemplateClickCallBack,
         saveRoot.root.setOnClickListener {
             Log.d("myEmptyClick", "empty click")
         }
+        dialogRoot.root.setOnClickListener {
+            Log.d("myEmptyClick", "empty click")
+        }
 
         mainBinding.btnHome.setOnClickListener {
             showHomeRoot()
@@ -436,8 +436,174 @@ class MainActivity : AppCompatActivity(), TemplateClickCallBack,
 
         saveRoot.cardSave.setOnClickListener {
             disMissSavingRoot()
-            Utils.showToast(this, "card Save")
+
+            dialogRoot.root.visibility = View.VISIBLE
+
+            try {
+
+                if ((Utils.mainCategory == "svg")) {
+
+                    Log.d(
+                        "myFileName", "${Utils.mainCategory} --  " +
+                                "${Utils.subCategory} -- ${Utils.fileLabelNumber}" +
+                                " -- ${Utils.getFileExt()}"
+                    )
+
+                    val mRef = FirebaseStorage.getInstance().reference
+
+                    val completePath =
+                        "/${Utils.mainCategory}/${Utils.subCategory}/${Utils.fileLabelNumber}${Utils.getFileExt()}"
+
+                    val islandRef = mRef.child(completePath)
+
+                    val tenMegabyte: Long = (1024 * 1024) * 10
+
+                    if (Utils.isNetworkAvailable(this)) {
+
+                        islandRef.getBytes(tenMegabyte).addOnSuccessListener {
+
+                            workerThread.execute {
+
+                                val filePath = saveMediaToStorage(it)
+
+                                Log.d("myLocalPath", "${filePath}")
+
+                                workerHandler.postDelayed({
+
+                                    if (filePath != null) {
+                                        showAnimation()
+                                        dialogRoot.root.visibility = View.GONE
+                                        Utils.showToast(this, "File is save this path ${filePath}")
+                                    } else {
+                                        showAnimation()
+                                        dialogRoot.root.visibility = View.GONE
+                                    }
+
+                                }, 1000)
+
+                            }
+
+                        }.addOnFailureListener {
+                            // Handle any errors
+                            Log.d("myLocalPath", "byte is not download")
+                            showAnimation()
+                            dialogRoot.root.visibility = View.GONE
+                        }
+                    } else {
+                        showAnimation()
+                        dialogRoot.root.visibility = View.GONE
+                        Utils.showToast(this, getString(R.string.internet_not_connected))
+                    }
+
+
+                } else {
+
+                    val path =
+                        "${Utils.mainCategory}/${Utils.subCategory}/thumbnails/${Utils.fileLabelNumber}.png"
+
+                    workerThread.execute {
+
+                        //Finally writing the bitmap to the output stream that we opened
+                        val isPut: InputStream = assets.open(path)
+
+                        val s = saveMediaToStorage(isPut.readBytes())
+
+                        workerHandler.postDelayed({
+
+                            if (s != null) {
+                                showAnimation()
+                                dialogRoot.root.visibility = View.GONE
+                                Utils.showToast(this, "File is save this path ${s}")
+                            } else {
+                                showAnimation()
+                                dialogRoot.root.visibility = View.GONE
+                            }
+
+                        }, 1000)
+
+                    }
+                }
+
+            } catch (ex: IOException) {
+                ex.printStackTrace()
+                showAnimation()
+                dialogRoot.root.visibility = View.GONE
+                Utils.showToast(this, getString(R.string.something_went_wrong))
+            }
+
         }
+    }
+
+    private fun saveMediaToStorage(bytes: ByteArray): String? {
+
+        var filePath: String? = null
+
+        //Generating a file name
+        val filename = "${Utils.fileLabelNumber}${Utils.getFileExt()}"
+
+        //Output stream
+        var fos: OutputStream? = null
+
+        //For devices running android >= Q
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            //getting the contentResolver
+            applicationContext?.contentResolver?.also { resolver ->
+
+                val dirDest =
+                    File(Utils.getRootPath(), "${Utils.mainCategory}/${Utils.subCategory}")
+
+                //Content resolver will process the contentvalues
+                val contentValues = ContentValues().apply {
+                    //putting file information in content values
+                    put(MediaStore.MediaColumns.DISPLAY_NAME, filename)
+                    put(MediaStore.MediaColumns.RELATIVE_PATH, "$dirDest")
+                }
+
+                //MediaStore.Files.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY)
+                //Inserting the contentValues to contentResolver and getting the Uri
+                // val imageUri: Uri? = resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, contentValues)
+                val imageUri: Uri? = resolver.insert(
+                    MediaStore.Files.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY),
+                    contentValues
+                )
+
+                //Opening an outputstream with the Uri that we got
+                fos = imageUri?.let { resolver.openOutputStream(it) }
+
+                filePath = dirDest.toString()
+
+            }
+
+        } else {
+            //These for devices running on android < Q
+            //So I don't think an explanation is needed here
+            val dirDest = File(Utils.getRootPath(), "${Utils.mainCategory}/${Utils.subCategory}")
+            if (!dirDest.exists()) {
+                dirDest.mkdirs()
+            }
+            val image = File(dirDest, filename)
+
+            Log.e("myFilePath", "$image")
+
+            fos = FileOutputStream(image)
+
+            filePath = image.toString()
+
+        }
+
+        fos?.use {
+            //Finally writing the bitmap to the output stream that we opened
+
+            it.write(bytes)
+
+            it.flush()
+            it.close()
+
+            Log.e("myFileFos", "Saved to Photos Main")
+
+        }
+
+        return filePath
     }
 
     private fun disMissSavingRoot() {
