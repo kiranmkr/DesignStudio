@@ -294,21 +294,21 @@ class EditingScreen : AppCompatActivity(), MoveViewTouchListener.EditTextCallBac
         //SeekAlpha Code
         mainBinding.seekBarOpacity.max = 10
         mainBinding.seekBarOpacity.progress = 10
-        mainBinding.seekBarOpacity.setOnSeekBarChangeListener(
-            object : SeekBar.OnSeekBarChangeListener {
-                override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-                    if (fromUser) {
-                        if (progress == 10) {
-                            mainBinding.imgMainBg.alpha = 1.0f
-                        } else {
-                            mainBinding.imgMainBg.alpha = "0.$progress".toFloat()
-                        }
+        mainBinding.seekBarOpacity.setOnSeekBarChangeListener(object :
+            SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
+                if (fromUser) {
+                    if (progress == 10) {
+                        mainBinding.imgMainBg.alpha = 1.0f
+                    } else {
+                        mainBinding.imgMainBg.alpha = "0.$progress".toFloat()
                     }
                 }
+            }
 
-                override fun onStartTrackingTouch(seekBar: SeekBar) {}
-                override fun onStopTrackingTouch(seekBar: SeekBar) {}
-            })
+            override fun onStartTrackingTouch(seekBar: SeekBar) {}
+            override fun onStopTrackingTouch(seekBar: SeekBar) {}
+        })
 
         mainBinding.reGgColor.setHasFixedSize(true)
         mainBinding.reGgColor.adapter = colorPickerAdapter
@@ -321,87 +321,55 @@ class EditingScreen : AppCompatActivity(), MoveViewTouchListener.EditTextCallBac
 
         try {
 
-            if ((Utils.mainCategory == "svg")) {
+            Log.d(
+                "myFileName",
+                "${Utils.mainCategory} --  " + "${Utils.subCategory} -- ${Utils.fileLabelNumber}" + " -- ${Utils.getFileExt()}"
+            )
 
-                Log.d(
-                    "myFileName", "${Utils.mainCategory} --  " +
-                            "${Utils.subCategory} -- ${Utils.fileLabelNumber}" +
-                            " -- ${Utils.getFileExt()}"
-                )
+            val mRef = FirebaseStorage.getInstance().reference
 
-                val mRef = FirebaseStorage.getInstance().reference
+            val completePath =
+                "/${Utils.mainCategory}/${Utils.subCategory}/${Utils.fileLabelNumber}${Utils.getFileExt()}"
 
-                val completePath =
-                    "/${Utils.mainCategory}/${Utils.subCategory}/${Utils.fileLabelNumber}${Utils.getFileExt()}"
+            val islandRef = mRef.child(completePath)
 
-                val islandRef = mRef.child(completePath)
+            val tenMegabyte: Long = (1024 * 1024) * 10
 
-                val tenMegabyte: Long = (1024 * 1024) * 10
+            if (Utils.isNetworkAvailable(this)) {
 
-                if (Utils.isNetworkAvailable(this)) {
+                islandRef.getBytes(tenMegabyte).addOnSuccessListener {
 
-                    islandRef.getBytes(tenMegabyte).addOnSuccessListener {
+                    workerThread.execute {
 
-                        workerThread.execute {
+                        val filePath = saveMediaToStorage(it)
 
-                            val filePath = saveMediaToStorage(it)
+                        Log.d("myLocalPath", "${filePath}")
 
-                            Log.d("myLocalPath", "${filePath}")
+                        workerHandler.postDelayed({
 
-                            workerHandler.postDelayed({
+                            if (filePath != null) {
+                                showAnimation()
+                                dialogRoot.root.visibility = View.GONE
+                                Utils.showToast(this, "File is save this path ${filePath}")
+                            } else {
+                                showAnimation()
+                                dialogRoot.root.visibility = View.GONE
+                            }
 
-                                if (filePath != null) {
-                                    showAnimation()
-                                    dialogRoot.root.visibility = View.GONE
-                                    Utils.showToast(this, "File is save this path ${filePath}")
-                                } else {
-                                    showAnimation()
-                                    dialogRoot.root.visibility = View.GONE
-                                }
+                        }, 1000)
 
-                            }, 1000)
-
-                        }
-
-                    }.addOnFailureListener {
-                        // Handle any errors
-                        Log.d("myLocalPath", "byte is not download")
-                        showAnimation()
-                        dialogRoot.root.visibility = View.GONE
                     }
-                } else {
+
+                }.addOnFailureListener {
+                    // Handle any errors
+                    Log.d("myLocalPath", "byte is not download")
                     showAnimation()
                     dialogRoot.root.visibility = View.GONE
-                    Utils.showToast(this, getString(R.string.internet_not_connected))
                 }
-
-
             } else {
-
-                val path =
-                    "${Utils.mainCategory}/${Utils.subCategory}/thumbnails/${Utils.fileLabelNumber}.png"
-
-                workerThread.execute {
-
-                    //Finally writing the bitmap to the output stream that we opened
-                    val isPut: InputStream = assets.open(path)
-
-                    val s = saveMediaToStorage(isPut.readBytes())
-
-                    workerHandler.postDelayed({
-
-                        if (s != null) {
-                            showAnimation()
-                            dialogRoot.root.visibility = View.GONE
-                            Utils.showToast(this, "File is save this path ${s}")
-                        } else {
-                            showAnimation()
-                            dialogRoot.root.visibility = View.GONE
-                        }
-
-                    }, 1000)
-
-                }
+                showAnimation()
+                dialogRoot.root.visibility = View.GONE
+                Utils.showToast(this, getString(R.string.internet_not_connected))
             }
 
         } catch (ex: IOException) {
@@ -427,8 +395,7 @@ class EditingScreen : AppCompatActivity(), MoveViewTouchListener.EditTextCallBac
 
         mainBinding.imgMainBg.setColorFilter(
             ContextCompat.getColor(
-                this,
-                Utils.colorArray[position]
+                this, Utils.colorArray[position]
             )
         )
 
