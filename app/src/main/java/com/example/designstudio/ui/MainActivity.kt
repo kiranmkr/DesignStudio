@@ -108,6 +108,16 @@ class MainActivity : AppCompatActivity(), TemplateClickCallBack,
             }
         )
 
+        GBilling.setOnErrorObserver(this,
+            object : Observer<Int> {
+                override fun onChanged(t: Int?) {
+
+                    if (t != null) {
+
+                        Log.d("myBillingError", "${t}")
+                    }
+                }
+            })
 
     }
 
