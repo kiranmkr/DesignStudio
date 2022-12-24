@@ -14,6 +14,7 @@
     <style name="AppTheme.Launcher" parent="Theme.MaterialComponents.Light.NoActionBar">
         <item name="android:windowBackground">@drawable/launcher_screen_with_logo</item>
         <item name="android:statusBarColor">@android:color/white</item>
+        <item name="android:forceDarkAllowed" tools:targetApi="q">false</item>
     </style>
 
 </resources>

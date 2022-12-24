@@ -17,6 +17,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.transition.TransitionManager
 import com.android.billingclient.api.Purchase
+import com.example.designstudio.BuildConfig
 import com.example.designstudio.R
 import com.example.designstudio.billing.GBilling
 import com.example.designstudio.customCallBack.PopularClickListener
@@ -100,7 +101,10 @@ class MainActivity : AppCompatActivity(), TemplateClickCallBack,
                             proUser()
                         } else {
                             Log.d("myBilling", "Billing  is not  buy")
-                            startActivity(Intent(this@MainActivity, ProScreen::class.java))
+                            workerHandler.postDelayed({
+                                startActivity(Intent(this@MainActivity, ProScreen::class.java))
+                            }, 500)
+
                         }
                     }
                 }
@@ -113,7 +117,6 @@ class MainActivity : AppCompatActivity(), TemplateClickCallBack,
                 override fun onChanged(t: Int?) {
 
                     if (t != null) {
-
                         Log.d("myBillingError", "${t}")
                     }
                 }
@@ -147,6 +150,17 @@ class MainActivity : AppCompatActivity(), TemplateClickCallBack,
         cardListView.add(homeRoot.cardShape)
 
         mainListAdapter = MainRecyclerAdapter()
+
+        homeRoot.tvHome.setOnClickListener {
+            if (BuildConfig.DEBUG && GBilling.getConnectionStatus() && GBilling.isSubscribedOrPurchasedSaved) {
+                GBilling.consumePurchase(Utils.inAppPurchasedkey, this) {
+                    if (it) {
+                        startActivity(Intent(this@MainActivity, MainActivity::class.java))
+                        finish()
+                    }
+                }
+            }
+        }
 
         homeRoot.mainRecycler.adapter = mainListAdapter
 

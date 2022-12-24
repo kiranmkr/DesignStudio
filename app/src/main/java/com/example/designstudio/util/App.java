@@ -4,6 +4,8 @@ import android.app.Application;
 import android.content.Context;
 import android.util.Log;
 
+import com.example.designstudio.billing.GBilling;
+
 public class App extends Application {
 
     public static Context context;
@@ -13,6 +15,8 @@ public class App extends Application {
         super.onCreate();
         context = this;
         Log.d("myApplication", "onCreate App");
+
+        GBilling.initializeInAppClass(this);
     }
 
     @Override
